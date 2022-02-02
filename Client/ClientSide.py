@@ -8,6 +8,7 @@ class Client:
     def __init__(self, ip, port, name, connector):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connector = connector
+        self.stop = False
         try:
             self.target_ip = ip
             self.target_port = int(port)
@@ -34,15 +35,21 @@ class Client:
         print("Connected to Server")
 
         # start threads
-        receive_thread = threading.Thread(target=self.receive_server_data).start()
-        send_thread = threading.Thread(target=self.send_data_to_server).start()
+        self.receive_thread = threading.Thread(target=self.receive_server_data).start()
+        # self.send_thread = threading.Thread(target=self.send_data_to_server).start()
+
+
+    def kill(self):
+        self.stop = True
+        self.s.close()
+        print("Disconnected from server")
 
     def split_users(self, data):
         self.users = data.split("|")
         self.users.remove("accounts")
 
     def receive_server_data(self):
-        while True:
+        while not self.stop:
             try:
                 data = self.s.recv(1024)
 
@@ -68,7 +75,7 @@ class Client:
         self.s.send(data.encode())
 
     def send_data_to_server(self):
-        while True:
+        while not self.stop:
             try:
                 data = input("")
                 self.s.send(data.encode())

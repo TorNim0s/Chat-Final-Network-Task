@@ -1,3 +1,4 @@
+import sys
 import threading
 
 from ClientSide import Client
@@ -11,6 +12,7 @@ class Connector:
         self.gui.init()
         self.data = []
         self.gui.start()
+        self.client.kill()
 
 
     def send_message(self, message):

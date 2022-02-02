@@ -1,3 +1,5 @@
+import sys
+
 import pygame as pg
 
 class GUI:
@@ -41,9 +43,9 @@ class GUI:
         pg.draw.line(self.users_surface, (255, 255, 255), (0, 720), (280, 720))
 
         # chat surface
-        pg.draw.line(self.chat_surface, (255, 255, 255), (0, 0), (800, 0))
-        pg.draw.line(self.chat_surface, (255, 255, 255), (0, 50), (800, 50))
-        self.chat_surface.blit(header.render("Eldad's And Ilan's Chat Room", True, (255, 255, 255)), (250, 15))
+        # pg.draw.line(self.chat_surface, (255, 255, 255), (0, 0), (800, 0))
+        # pg.draw.line(self.chat_surface, (255, 255, 255), (0, 50), (800, 50))
+        # self.chat_surface.blit(header.render("Eldad's And Ilan's Chat Room", True, (255, 255, 255)), (250, 15))
 
         # menu surface
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 0), (0, 720))
@@ -66,18 +68,18 @@ class GUI:
 
     def start(self):
         clock = pg.time.Clock()
-        quit = False
         color_inactive = pg.Color('lightskyblue3')
         color_active = pg.Color('dodgerblue2')
         color = color_inactive
         active = False
         text = ''
+        quit = False
         while not quit:
-            quit = pg.event.get(pg.QUIT)
-            if (quit):
-                break
             for e in pg.event.get():
-                if e.type == pg.MOUSEBUTTONDOWN:
+                if e.type == pg.QUIT:
+                    quit = True
+                    pg.quit()
+                elif e.type == pg.MOUSEBUTTONDOWN:
                     mouse = pg.mouse.get_pos()
                     rect = self.users_surface.get_rect()
                     rect.x = 800
@@ -99,7 +101,7 @@ class GUI:
                         if e.button == 5:
                             self.scroll_chat_y = max(self.scroll_chat_y - 15, -300)
 
-                if e.type == pg.KEYDOWN:
+                elif e.type == pg.KEYDOWN:
                     if active:
                         if e.key == pg.K_RETURN:
                             self.connector.send_message(text)
@@ -109,6 +111,9 @@ class GUI:
                             text = text[:-1]
                         else:
                             text += e.unicode
+
+            if quit:
+                break
 
             self.screen.fill((30, 30, 30))
             txt_surface = self.font.render(text, True, pg.Color("white"))
