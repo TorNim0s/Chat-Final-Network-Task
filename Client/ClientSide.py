@@ -3,11 +3,11 @@ from pygame import *
 import socket
 import threading
 
-Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102'}
-
 class Client:
-    def __init__(self, ip, port, name):
+    Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102'}
+    def __init__(self, ip, port, name, connector):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connector = connector
         try:
             self.target_ip = ip
             self.target_port = int(port)
@@ -50,16 +50,22 @@ class Client:
                 # print(data)
                 data_splited = data.split(sep="|" , maxsplit=2)
                 # print(data_splited)
-                if data_splited[0] == Codes["UserJoined"]:
+                if data_splited[0] == Client.Codes["UserJoined"]:
                     self.users.append(data_splited[1])
                     print(f"{data_splited[1]} joined the chat")
-                elif data_splited[0] == Codes["UserLeft"]:
+                    self.connector.recieve_message(f"{data_splited[1]} joined the chat")
+                elif data_splited[0] == Client.Codes["UserLeft"]:
                     self.users.remove(data_splited[1])
                     print(f"{data_splited[1]} left the chat")
-                elif data_splited[0] == Codes["Message"]:
+                    self.connector.recieve_message(f"{data_splited[1]} left the chat")
+                elif data_splited[0] == Client.Codes["Message"]:
                     print(data_splited[1])
+                    self.connector.recieve_message(data_splited[1])
             except:
                 pass
+
+    def send_data(self, data):
+        self.s.send(data.encode())
 
     def send_data_to_server(self):
         while True:
