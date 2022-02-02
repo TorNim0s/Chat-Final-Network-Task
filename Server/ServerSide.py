@@ -16,7 +16,7 @@ class Server:
         self.ip = socket.gethostbyname(socket.gethostname()) # get ip of the server
         while 1: # infinite loop
             try:
-                self.port = int(input('Enter port number --> ')) # as for a port
+                self.port = 1111 # port number
 
                 self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create a new socket AF_INET = IPV4 , socket type = TCP.
                 self.s.bind((self.ip, self.port)) # bind the socket to the port. if the port is already has been socketed it will send error.
@@ -85,6 +85,7 @@ class Server:
                 name = self.connections[c]
                 data = f"{name}"
                 self.broadcast(c, data.encode(), Codes["UserLeft"])
+                clients.remove(self.connections[c])
                 self.connections.remove(addr)
                 c.close()
 

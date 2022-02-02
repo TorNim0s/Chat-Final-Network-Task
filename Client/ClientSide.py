@@ -29,6 +29,7 @@ class Client:
         data_users = self.s.recv(1024).decode()
         self.split_users(data_users)
         print(self.users)
+        self.connector.users = self.users
 
         chunk_size = 1024  # 1024 bytes
 
@@ -61,10 +62,12 @@ class Client:
                     self.users.append(data_splited[1])
                     print(f"{data_splited[1]} joined the chat")
                     self.connector.recieve_message(f"{data_splited[1]} joined the chat")
+                    self.connector.update_users(self.users)
                 elif data_splited[0] == Client.Codes["UserLeft"]:
                     self.users.remove(data_splited[1])
                     print(f"{data_splited[1]} left the chat")
                     self.connector.recieve_message(f"{data_splited[1]} left the chat")
+                    self.connector.update_users(self.users)
                 elif data_splited[0] == Client.Codes["Message"]:
                     print(data_splited[1])
                     self.connector.recieve_message(data_splited[1])

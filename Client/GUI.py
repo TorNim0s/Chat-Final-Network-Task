@@ -22,8 +22,6 @@ class GUI:
 
     def init(self):
 
-        users = ["Eldad", "Ilan", "Shlomi", "Yael", "Yehuda"]
-
         self.menu_surface.fill((30, 30, 30))
         self.chat_surface.fill((30, 30, 30))
         self.users_surface.fill((30, 30, 30))
@@ -31,7 +29,8 @@ class GUI:
         y = 60
         f = pg.font.SysFont('', 24)
         header = pg.font.SysFont('', 32)
-        for l in users:
+
+        for l in self.connector.users:
             self.users_surface.blit(f.render(l, True, (255, 255, 255)), (20, y))
             y += 30
 
@@ -57,6 +56,23 @@ class GUI:
 
         # input surface
 
+    def update_users(self , users):
+        f = pg.font.SysFont('', 24)
+        y = 60
+        self.users_surface.fill((30, 30, 30))
+
+        header = pg.font.SysFont('', 32)
+
+        self.users_surface.blit(header.render("Users", True, (255, 255, 255)), (120, 15))
+        pg.draw.line(self.users_surface, (255, 255, 255), (0, 50), (280, 50))
+        pg.draw.line(self.users_surface, (255, 255, 255), (0, 0), (0, 720))
+        pg.draw.line(self.users_surface, (255, 255, 255), (280, 0), (280, 720))
+        pg.draw.line(self.users_surface, (255, 255, 255), (0, 0), (280, 0))
+        pg.draw.line(self.users_surface, (255, 255, 255), (0, 720), (280, 720))
+
+        for item in users:
+            self.users_surface.blit(f.render(item, True, (255, 255, 255)), (20, y))
+            y+=30
 
     def update(self, message):
         f = pg.font.SysFont('', 24)
