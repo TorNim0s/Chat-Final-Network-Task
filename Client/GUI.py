@@ -81,7 +81,7 @@ class GUI:
         self.chat_surface.fill((30, 30, 30))
         for item in self.connector.data:
             self.chat_surface.blit(f.render(item, True, (255, 255, 255)), (20, 20+y))
-            y+=30
+            y += 30
 
     def start(self):
         clock = pg.time.Clock()
