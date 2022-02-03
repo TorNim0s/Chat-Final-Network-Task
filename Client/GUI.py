@@ -54,6 +54,7 @@ class GUI:
         self.menu_surface.blit(header.render("Menu", True, (255, 255, 255)), (120, 15))
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 50), (280, 50))
 
+
         # input surface
 
     def update_users(self , users):

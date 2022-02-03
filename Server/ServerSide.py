@@ -86,8 +86,9 @@ class Server:
                 data = f"{name}"
                 self.broadcast(c, data.encode(), Codes["UserLeft"])
                 clients.remove(self.connections[c])
-                self.connections.remove(addr)
+                self.connections.__delitem__(c)
                 c.close()
+                break
 
 if __name__ == '__main__':
     server = Server()

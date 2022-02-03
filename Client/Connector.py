@@ -1,14 +1,19 @@
 import sys
 import threading
-
+import socket
 from ClientSide import Client
 from GUI import GUI
+from LoginGUI import LoginGUI
 
 class Connector:
 
     def __init__(self):
-        name = input("Enter your name: ")
-        self.client = Client("192.168.56.1", 1111, name, self)
+        self.name = "Dan"
+        self.ip = "localhost"
+        self.port = 1111
+        self.Login = LoginGUI(self)
+        self.Login.init()
+        self.client = Client(self.ip, self.port, self.name, self)
         self.gui = GUI(self)
         self.gui.init()
         self.data = []
@@ -27,6 +32,10 @@ class Connector:
         self.data.insert(0, message)
         self.gui.update(message)
 
+    def set_client_info(self, name, ip, port):
+        self.name = name
+        self.ip = ip
+        self.port = port
 
 
 if __name__ == '__main__':
