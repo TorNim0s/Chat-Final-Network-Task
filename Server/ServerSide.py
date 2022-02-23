@@ -1,14 +1,13 @@
 import socket
 import threading
 
-clients = []
-
 """
 Create a server with a socket and a thread
 max 24 clients can connect to the server at the same time
 """
 
-Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102'}
+Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UplodeFile": '104',
+         "DownloadFile": '105', "Error": '105'}
 
 class Server:
 
@@ -43,9 +42,7 @@ class Server:
             print(client_name.decode());
             self.connections[c] = client_name.decode()
 
-            clients.append(client_name.decode())
-
-            data = "accounts|" + "|".join(clients)
+            data = "accounts|" + "|".join(self.connections.values())
 
             c.send(data.encode())
 
@@ -72,20 +69,45 @@ class Server:
         except:
             print("Error sending data to %s" % (self.connections[sock]))
 
+    def PrivateMessage(self, sock, data):
+        try:
+            code = Codes["PrivateMessage"]
+            data = f"{code}|{data.decode()}".encode()
+            sock.send(data)
+        except:
+            print("Error sending data to %s" % (self.connections[sock]))
+
     def handle_client(self, c, addr):
         while 1:
             try:
                 data = c.recv(1024)
-                print("data recieved %s from %s" % (data.decode(), self.connections[c]))
-                data = f"{self.connections[c]}: {data.decode()}"
-                data = data.encode()
-                self.broadcast(c, data, code=Codes["Message"])
+                data = data.decode()
+                print("data recieved %s from %s" % (data, self.connections[c]))
+
+                data_splited = data.split(sep="|", maxsplit=2)
+
+                data = f"{self.connections[c]}: {data_splited[1]}"
+
+                print(data_splited)
+
+                # data = data.encode()
+                if data_splited[0] == Codes["Message"]:
+                    self.broadcast(c, data.encode(), code=Codes["Message"])
+                elif data_splited[0] == Codes["PrivateMessage"]:
+                    name = data.split(sep="|", maxsplit=2)[0]
+
+                    key_list = self.connections.keys()
+                    val_list = self.connections.values()
+
+                    position = val_list.index(name)
+                    sock = key_list[position]
+
+                    self.PrivateMessage(c, sock ,decoded_data[1].encode())
 
             except socket.error:
                 name = self.connections[c]
                 data = f"{name}"
                 self.broadcast(c, data.encode(), Codes["UserLeft"])
-                clients.remove(self.connections[c])
                 self.connections.__delitem__(c)
                 c.close()
                 break

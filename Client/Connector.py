@@ -26,10 +26,17 @@ class Connector:
         self.gui.update_users(users)
 
     def send_message(self, message):
-        self.client.send_data(message)
+        self.client.send_data(message, Client.Codes["Message"])
 
-    def recieve_message(self, message):
-        self.data.insert(0, message)
+    def send_private_message(self, message, user):
+        message = f"{self.name}|{message}"
+        self.client.send_data(message, Client.Codes["PrivateMessage"])
+
+    def recieve_message(self, message, code=0):
+        if code == Client.Codes["PrivateMessage"]:
+            self.data.insert(0, f"*Private* {message}")
+        else:
+            self.data.insert(0, message)
         self.gui.update(message)
 
     def set_client_info(self, name, ip, port):

@@ -4,7 +4,9 @@ import socket
 import threading
 
 class Client:
-    Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102'}
+    Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UplodeFile": '104',
+         "DownloadFile": '105', "Error": '105'}
+
     def __init__(self, ip, port, name, connector):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connector = connector
@@ -71,24 +73,28 @@ class Client:
                 elif data_splited[0] == Client.Codes["Message"]:
                     print(data_splited[1])
                     self.connector.recieve_message(data_splited[1])
+                elif data_splited[0] == Client.Codes["PrivateMessage"]:
+                    print(data_splited[1])
+                    self.connector.recieve_message(data_splited[1], Client.Codes["PrivateMessage"])
             except:
                 pass
 
-    def send_data(self, data):
+    def send_data(self, data, code):
+        data = code + "|" + data
         self.s.send(data.encode())
 
-    def send_data_to_server(self):
-        while not self.stop:
-            try:
-                data = input("")
-                self.s.send(data.encode())
-            except:
-                print("Couldn't send data to server")
+    # def send_data_to_server(self):
+    #     while not self.stop:
+    #         try:
+    #             data = input("")
+    #             self.s.send(data.encode())
+    #         except:
+    #             print("Couldn't send data to server")
 
 
-if __name__ == '__main__':
-    ip = input("IP: ")
-    port = input("Port: ")
-    name = input("Name: ")
-
-    Client(ip, port, name)
+# if __name__ == '__main__':
+#     ip = input("IP: ")
+#     port = input("Port: ")
+#     name = input("Name: ")
+#
+#     Client(ip, port, name)

@@ -120,7 +120,7 @@ class GUI:
 
                 elif e.type == pg.KEYDOWN:
                     if active:
-                        if e.key == pg.K_RETURN:
+                        if e.key == pg.K_RETURN or e.unicode == '\r':
                             self.connector.send_message(text)
                             print(text)
                             text = ''
