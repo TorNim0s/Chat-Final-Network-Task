@@ -4,8 +4,8 @@ from LoginGUI import InputBox
 from LoginGUI import Button
 
 class DirectMsg:
-    def __init__(self, connector=None):
-        # self.connector = connector
+    def __init__(self, connector):
+        self.connector = connector
         pg.init()
         self.screen = pg.display.set_mode((400, 200))
         self.done = False
@@ -14,11 +14,16 @@ class DirectMsg:
         self.input_surface2 = pg.surface.Surface((300, 100))
 
         self.header = pg.font.SysFont('', 28)
-        self.screen.blit(self.header.render("Send Direct Message", True, (255, 255, 255)), (20, 15))
+        self.screen.blit(self.header.render("Send Private Message", True, (255, 255, 255)), (20, 15))
         self.screen.blit(self.header.render("To: ", True, (255, 255, 255)), (20, 53))
 
         self.input_box1 = InputBox(0, 0, 175, 30, surface=self.input_surface1, addX=100, addY=50)
         self.input_box2 = InputBox(0, 0, 300, 100, surface=self.input_surface2, addY=100)
+
+    def finish(self):
+        self.done = True
+        self.connector.send_direct_msg(self.input_box2.text, self.input_box1.text)
+        pg.quit()
 
     def init(self):
         clock = pg.time.Clock()

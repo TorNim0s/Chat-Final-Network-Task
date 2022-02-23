@@ -1,6 +1,5 @@
 import pygame as pg
 
-
 class InputBox:
 
     def __init__(self, x, y, w, h, text='', surface=None, addX=0, addY=0):
@@ -102,10 +101,9 @@ class Button:
                                                          self.login.input_box3.text)
                     self.login.done = True
                 if self.direct:
-                    print("To: ", self.direct.input_box1.text)
-                    print("Message: ", self.direct.input_box2.text)
-                    self.direct.input_box2.text = ""
-
+                    # print("To: ", self.direct.input_box1.text)
+                    # print("Message: ", self.direct.input_box2.text)
+                    self.direct.connector.finish()
 
 
 class LoginGUI:
