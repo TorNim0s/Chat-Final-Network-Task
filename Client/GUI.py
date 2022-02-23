@@ -1,9 +1,14 @@
 import sys
 
 import pygame as pg
+from LoginGUI import Button
 
 class GUI:
     def __init__(self, Connector):
+        self.message = Button('Direct Message', 70, 75, 150, 30, addX=800, addY=500)
+        self.upload = Button('Upload File', 70, 125, 150, 30, addX=800, addY=500)
+        self.download = Button('Download File', 70, 175, 150, 30, addX=800, addY=500)
+
         pg.init()
 
         self.screen = pg.display.set_mode((1080, 720))
@@ -93,9 +98,14 @@ class GUI:
         quit = False
         while not quit:
             for e in pg.event.get():
+                self.message.handle_event(e)
+                self.upload.handle_event(e)
+                self.download.handle_event(e)
+
                 if e.type == pg.QUIT:
                     quit = True
                     pg.quit()
+
                 elif e.type == pg.MOUSEBUTTONDOWN:
                     mouse = pg.mouse.get_pos()
                     rect = self.users_surface.get_rect()
@@ -143,6 +153,13 @@ class GUI:
             self.screen.blit(self.chat_surface, (0, self.scroll_chat_y))
             self.screen.blit(self.users_surface, (800, self.scroll_users_y))
             self.screen.blit(self.menu_surface, (800, 500))
+
+            self.message.update()
+            self.message.draw(self.menu_surface)
+            self.upload.update()
+            self.upload.draw(self.menu_surface)
+            self.download.update()
+            self.download.draw(self.menu_surface)
 
             pg.display.flip()
             clock.tick(30)

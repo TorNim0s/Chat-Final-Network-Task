@@ -3,7 +3,7 @@ import pygame as pg
 
 class InputBox:
 
-    def __init__(self, x, y, w, h, text='', surface=None):
+    def __init__(self, x, y, w, h, text='', surface=None, addX=0, addY=0):
         self.COLOR_INACTIVE = pg.Color('lightskyblue3')
         self.COLOR_ACTIVE = pg.Color('dodgerblue2')
         self.FONT = pg.font.Font(None, 32)
@@ -13,13 +13,15 @@ class InputBox:
         self.txt_surface = self.FONT.render(text, True, self.color)
         self.active = False
         self.surface = surface
+        self.addX = addX
+        self.addY = addY
 
     def handle_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             temp = self.rect.copy()
-            temp.y += 50
-            temp.x += 100
+            temp.y += self.addY
+            temp.x += self.addX
             if temp.collidepoint(event.pos):
                 # Toggle the active variable.
                 self.active = not self.active
@@ -36,10 +38,6 @@ class InputBox:
                 # Re-render the text.
                 self.txt_surface = self.FONT.render(self.text, True, self.color)
 
-    def update(self):
-        # Resize the box if the text is too long.
-        self.rect.w = 175
-
     def draw(self):
         # Blit the text.
         self.surface.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
@@ -49,10 +47,15 @@ class InputBox:
 
 class Button:
 
-    def __init__(self, text, x=0, y=0, width=100, height=50, command=None, login=None):
+    def __init__(self, text, x=0, y=0, width=100, height=50, command=None, login=None, direct=None, addX=0, addY=0):
         self.login = login
+        self.direct = direct
+
         self.text = text
         self.command = command
+
+        self.addX = addX
+        self.addY = addY
 
         self.image_normal = pg.Surface((width, height))
         self.image_normal.fill((255, 255, 255))
@@ -83,18 +86,26 @@ class Button:
             self.image = self.image_normal
 
     def draw(self, surface):
-
         surface.blit(self.image, self.rect)
 
     def handle_event(self, event):
 
         if event.type == pg.MOUSEMOTION:
-            self.hovered = self.rect.collidepoint(event.pos)
+            copy = self.rect.copy()
+            copy.x += self.addX
+            copy.y += self.addY
+            self.hovered = copy.collidepoint(event.pos)
         elif event.type == pg.MOUSEBUTTONDOWN:
             if self.hovered:
-                self.login.connector.set_client_info(self.login.input_box1.text, self.login.input_box2.text,
-                                                     self.login.input_box3.text)
-                self.login.done = True
+                if self.login:
+                    self.login.connector.set_client_info(self.login.input_box1.text, self.login.input_box2.text,
+                                                         self.login.input_box3.text)
+                    self.login.done = True
+                if self.direct:
+                    print("To: ", self.direct.input_box1.text)
+                    print("Message: ", self.direct.input_box2.text)
+                    self.direct.input_box2.text = ""
+
 
 
 class LoginGUI:
@@ -112,9 +123,9 @@ class LoginGUI:
         self.screen.blit(header.render("IP: ", True, (255, 255, 255)), (20, 103))
         self.screen.blit(header.render("Port: ", True, (255, 255, 255)), (20, 153))
 
-        self.input_box1 = InputBox(0, 0, 175, 30, surface=self.input_surface)
-        self.input_box2 = InputBox(0, 50, 175, 30, surface=self.input_surface)
-        self.input_box3 = InputBox(0, 100, 175, 30, surface=self.input_surface)
+        self.input_box1 = InputBox(0, 0, 175, 30, surface=self.input_surface, addX=100, addY=50)
+        self.input_box2 = InputBox(0, 50, 175, 30, surface=self.input_surface, addX=100, addY=50)
+        self.input_box3 = InputBox(0, 100, 175, 30, surface=self.input_surface, addX=100, addY=50)
 
     def init(self):
         clock = pg.time.Clock()
@@ -125,17 +136,19 @@ class LoginGUI:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     self.done = True
+                    pg.quit()
                 for box in input_boxes:
                     box.handle_event(event)
                 button.handle_event(event)
 
-            for box in input_boxes:
-                box.update()
+            if self.done:
+                break
 
             self.input_surface.fill((30, 30, 30))
 
             for box in input_boxes:
                 box.draw()
+
 
             button.update()
             button.draw(self.screen)
