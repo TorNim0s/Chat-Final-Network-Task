@@ -40,7 +40,7 @@ class Connector:
         self.gui.update(message)
 
     def send_file(self, data, path):
-        self.client.send_data(data, Client.Codes["UplodeFile"], path)
+        self.client.send_data(data, Client.Codes["UploadFile"], path)
 
     def set_client_info(self, name, ip, port):
         self.name = name

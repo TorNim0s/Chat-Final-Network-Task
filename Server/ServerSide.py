@@ -1,14 +1,14 @@
 import socket
+from socket import timeout
 import threading
-import sys
-import select
+
 
 """
 Create a server with a socket and a thread
 max 24 clients can connect to the server at the same time
 """
 
-Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UplodeFile": '104',
+Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
          "DownloadFile": '105', "Error": '105'}
 
 class Server:
@@ -62,7 +62,7 @@ class Server:
 
     def broadcast(self, sock, data, code):
         data = f"{code}|{data.decode()}".encode()
-        print(data.decode())
+        # print(data.decode())
         for client, name in self.connections.items():
             if client != self.s:
                 if code == Codes["UserJoined"] or code == Codes["UserLeft"]:
@@ -89,11 +89,9 @@ class Server:
     def handle_client_file(self, data, code, addr):
         while True:
             try:
-                print("GOT HERE3")
                 # data = c.recv(1024)
                 # data = data.decode()
                 data = data.split("|")
-                print("GOT HERE2")
                 if code == Codes["DownloadFile"]:
                     file_name = data[1]
                     file_size = data[2]
@@ -101,10 +99,9 @@ class Server:
                     file_data = file_data.encode() # change this to get the file data
                     self.fs.sendto(file_data, addr)
                     print(f"File {file_name} has been sent to {addr[0]}")
-                elif code == Codes["UplodeFile"]:
+                elif code == Codes["UploadFile"]:
                     file_name = data[1]
                     file_size = data[2]
-                    print("GOT HERE")
                     with open(file_name, 'wb') as f:
                         file_data = self.fs.recv(1024)
                         while file_data:
@@ -138,13 +135,13 @@ class Server:
 
                 data_splited = data.split(sep="|", maxsplit=2)
 
-                print(data_splited)
+                # print(data_splited)
 
                 # data = data.encode()
                 if data_splited[0] == Codes["Message"]:
                     data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
-                elif data_splited[0] == Codes["UplodeFile"]:
+                elif data_splited[0] == Codes["UploadFile"]:
                     threading.Thread(target=self.handle_client_file, args=(data, data_splited[0], addr,)).start()
                 elif data_splited[0] == Codes["PrivateMessage"]:
                     data = f"{self.connections[c]}: {data_splited[2]}"

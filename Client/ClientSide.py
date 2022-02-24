@@ -4,7 +4,7 @@ import socket
 import threading
 
 class Client:
-    Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UplodeFile": '104',
+    Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
          "DownloadFile": '105', "Error": '105'}
 
     def __init__(self, ip, port, name, connector):
@@ -86,7 +86,7 @@ class Client:
     def send_data(self, data, code, path=None):
         data = code + "|" + data
         self.s.send(data.encode())
-        if(code == Client.Codes["UplodeFile"]):
+        if(code == Client.Codes["UploadFile"]):
             threading.Thread(target=self.send_file, args=(data,path)).start()
 
     def send_file(self, data, path):

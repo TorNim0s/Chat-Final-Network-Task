@@ -135,9 +135,9 @@ class GUI:
                             print(split)
                             if split[0] == '/pm':
                                 self.connector.send_private_message(' '.join(split[2:]), split[1])
-                            elif split[0] == '/uplode':
+                            elif split[0] == '/upload':
                                 if(len(split) != 4):
-                                    self.connector.recieve_message('Wrong number of arguments, use /uplode <file_name> <file_size> <file_path>')
+                                    self.connector.recieve_message('Wrong number of arguments, use /upload <file_name> <file_size> <file_path>')
                                 else:
                                     data = f"{split[1]}|{split[2]}"
                                     self.connector.send_file(data, split[3])
