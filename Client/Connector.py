@@ -39,6 +39,9 @@ class Connector:
             self.data.insert(0, message)
         self.gui.update(message)
 
+    def send_file(self, data, path):
+        self.client.send_data(data, Client.Codes["UplodeFile"], path)
+
     def set_client_info(self, name, ip, port):
         self.name = name
         self.ip = ip

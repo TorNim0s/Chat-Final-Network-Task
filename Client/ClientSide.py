@@ -19,10 +19,12 @@ class Client:
             self.users = []
 
             self.s.connect((self.target_ip, self.target_port))
-
+            self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         except:
             print("Couldn't connect to server")
             exit(1)
+
+        self.file_addr = (self.target_ip ,int(self.s.recv(1024).decode()))
 
         self.s.send(self.name.encode())
 
@@ -45,6 +47,7 @@ class Client:
     def kill(self):
         self.stop = True
         self.s.close()
+        self.fs.close()
         print("Disconnected from server")
 
     def split_users(self, data):
@@ -80,9 +83,28 @@ class Client:
             except:
                 pass
 
-    def send_data(self, data, code):
+    def send_data(self, data, code, path=None):
         data = code + "|" + data
         self.s.send(data.encode())
+        if(code == Client.Codes["UplodeFile"]):
+            threading.Thread(target=self.send_file, args=(data,path)).start()
+
+    def send_file(self, data, path):
+        data_splited = data.split(sep="|" , maxsplit=2)
+        filename = data_splited[1]
+        file_size = data_splited[2]
+        print(f"Sending {filename}")
+        # self.fs.send(filename.encode())
+        # self.fs.send(file_size.encode())
+        file_size = int(file_size)
+        with open(path, "rb") as f:
+            bytes_read = f.read(1024)
+            # self.fs.send(bytes_read)
+            while(bytes_read):
+                if (self.fs.sendto(bytes_read, self.file_addr)):
+                    bytes_read = f.read(1024)
+        print(f"Sent {filename}")
+
 
     # def send_data_to_server(self):
     #     while not self.stop:

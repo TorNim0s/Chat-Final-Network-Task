@@ -1,5 +1,7 @@
 import socket
 import threading
+import sys
+import select
 
 """
 Create a server with a socket and a thread
@@ -20,6 +22,10 @@ class Server:
                 self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create a new socket AF_INET = IPV4 , socket type = TCP.
                 self.s.bind((self.ip, self.port)) # bind the socket to the port. if the port is already has been socketed it will send error.
 
+                self.file_port = 2222
+                self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                self.fs.bind((self.ip, self.file_port))
+
                 break
             except:
                 print("Couldn't bind to that port")
@@ -27,15 +33,17 @@ class Server:
         print('IP Adress: ' + self.ip)
         print('Port Adress: ' + str(self.port))
 
+        self.files = []
         self.connections = {}
         self.accept_connections()
 
     def accept_connections(self):
         self.s.listen(24) # maximum client to listen
-
         while True:
             c, addr = self.s.accept()
             print("Accepted a connection request from %s:%s" % (addr[0], addr[1]))
+
+            c.send(str(self.file_port).encode())
 
             client_name = c.recv(1024)
 
@@ -78,6 +86,49 @@ class Server:
         except:
             print("Error sending data to %s" % (self.connections[sock]))
 
+    def handle_client_file(self, data, code, addr):
+        while True:
+            try:
+                print("GOT HERE3")
+                # data = c.recv(1024)
+                # data = data.decode()
+                data = data.split("|")
+                print("GOT HERE2")
+                if code == Codes["DownloadFile"]:
+                    file_name = data[1]
+                    file_size = data[2]
+                    file_data = data[3]
+                    file_data = file_data.encode() # change this to get the file data
+                    self.fs.sendto(file_data, addr)
+                    print(f"File {file_name} has been sent to {addr[0]}")
+                elif code == Codes["UplodeFile"]:
+                    file_name = data[1]
+                    file_size = data[2]
+                    print("GOT HERE")
+                    with open(file_name, 'wb') as f:
+                        file_data = self.fs.recv(1024)
+                        while file_data:
+                            f.write(file_data)
+                            self.fs.settimeout(2)
+                            file_data = self.fs.recv(1024)
+                    # file_data = self.fs.recv(1024)
+                    # print(f"File {file_name} has been sent to {addr[0]}")
+                    # self.sendmessage(c, file_data)
+
+
+                elif code == Codes["Error"]:
+                    print(data[1])
+                    self.fs.close()
+                    break
+            except timeout:
+                print(f"File {file_name} has been received from {addr[0]}")
+                self.files.append(file_name)
+                break
+            except:
+                print("Error receiving data from %s:%s" % (addr[0], addr[1]))
+                self.fs.close()
+                break
+
     def handle_client(self, c, addr):
         while 1:
             try:
@@ -93,6 +144,8 @@ class Server:
                 if data_splited[0] == Codes["Message"]:
                     data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
+                elif data_splited[0] == Codes["UplodeFile"]:
+                    threading.Thread(target=self.handle_client_file, args=(data, data_splited[0], addr,)).start()
                 elif data_splited[0] == Codes["PrivateMessage"]:
                     data = f"{self.connections[c]}: {data_splited[2]}"
                     name = data_splited[1]
