@@ -86,7 +86,7 @@ class Server:
         except:
             print("Error sending data to %s" % (self.connections[sock]))
 
-    def handle_client_file(self, data, code, addr):
+    def handle_client_file(self, data, code, addr, name):
         while True:
             try:
                 # data = c.recv(1024)
@@ -102,6 +102,7 @@ class Server:
                 elif code == Codes["UploadFile"]:
                     file_name = data[1]
                     file_size = data[2]
+                    print("Saving file %s" % file_name)
                     with open(file_name, 'wb') as f:
                         file_data = self.fs.recv(1024)
                         while file_data:
@@ -111,6 +112,10 @@ class Server:
                     # file_data = self.fs.recv(1024)
                     # print(f"File {file_name} has been sent to {addr[0]}")
                     # self.sendmessage(c, file_data)
+                    print(f"File {file_name} has been received from {addr[0]} known as : {name}")
+                    self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(),
+                                   Codes["Message"])
+                    self.files.append(file_name)
 
 
                 elif code == Codes["Error"]:
@@ -118,7 +123,8 @@ class Server:
                     self.fs.close()
                     break
             except timeout:
-                print(f"File {file_name} has been received from {addr[0]}")
+                print(f"File {file_name} has been received from {addr[0]} known as : {name}")
+                self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(), Codes["Message"])
                 self.files.append(file_name)
                 break
             except:
@@ -142,7 +148,7 @@ class Server:
                     data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
                 elif data_splited[0] == Codes["UploadFile"]:
-                    threading.Thread(target=self.handle_client_file, args=(data, data_splited[0], addr,)).start()
+                    threading.Thread(target=self.handle_client_file, args=(data, data_splited[0], addr, self.connections[c])).start()
                 elif data_splited[0] == Codes["PrivateMessage"]:
                     data = f"{self.connections[c]}: {data_splited[2]}"
                     name = data_splited[1]
