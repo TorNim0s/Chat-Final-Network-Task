@@ -71,6 +71,7 @@ class Client:
                     self.connector.recieve_message(f"{data_splited[1]} left the chat")
                     self.connector.update_users(self.users)
                 elif data_splited[0] == Client.Codes["Message"]:
+                    print("Hi BRO IM HERE")
                     print(data_splited[1])
                     self.connector.recieve_message(data_splited[1])
                 elif data_splited[0] == Client.Codes["PrivateMessage"]:

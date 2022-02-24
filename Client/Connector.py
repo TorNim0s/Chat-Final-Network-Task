@@ -29,7 +29,7 @@ class Connector:
         self.client.send_data(message, Client.Codes["Message"])
 
     def send_private_message(self, message, user):
-        message = f"{self.name}|{message}"
+        message = f"{user}|{message}"
         self.client.send_data(message, Client.Codes["PrivateMessage"])
 
     def recieve_message(self, message, code=0):

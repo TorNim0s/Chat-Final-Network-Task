@@ -131,7 +131,12 @@ class GUI:
                 elif e.type == pg.KEYDOWN:
                     if active:
                         if e.key == pg.K_RETURN or e.unicode == '\r':
-                            self.connector.send_message(text)
+                            split = text.split(' ')
+                            print(split)
+                            if split[0] == '/pm':
+                                self.connector.send_private_message(' '.join(split[2:]), split[1])
+                            else:
+                                self.connector.send_message(text)
                             print(text)
                             text = ''
                         elif e.key == pg.K_BACKSPACE:

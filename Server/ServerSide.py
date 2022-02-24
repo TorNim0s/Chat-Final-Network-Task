@@ -69,11 +69,12 @@ class Server:
         except:
             print("Error sending data to %s" % (self.connections[sock]))
 
-    def PrivateMessage(self, sock, data):
+    def PrivateMessage(self, my_sock, send_sock, data):
         try:
             code = Codes["PrivateMessage"]
             data = f"{code}|{data.decode()}".encode()
-            sock.send(data)
+            my_sock.send(data)
+            send_sock.send(data)
         except:
             print("Error sending data to %s" % (self.connections[sock]))
 
@@ -86,23 +87,27 @@ class Server:
 
                 data_splited = data.split(sep="|", maxsplit=2)
 
-                data = f"{self.connections[c]}: {data_splited[1]}"
-
                 print(data_splited)
 
                 # data = data.encode()
                 if data_splited[0] == Codes["Message"]:
+                    data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
                 elif data_splited[0] == Codes["PrivateMessage"]:
-                    name = data.split(sep="|", maxsplit=2)[0]
+                    data = f"{self.connections[c]}: {data_splited[2]}"
+                    name = data_splited[1]
 
-                    key_list = self.connections.keys()
-                    val_list = self.connections.values()
+                    # try:
+
+                    key_list = list(self.connections.keys())
+                    val_list = list(self.connections.values())
 
                     position = val_list.index(name)
                     sock = key_list[position]
 
-                    self.PrivateMessage(c, sock ,decoded_data[1].encode())
+                    self.PrivateMessage(c, sock ,data.encode())
+                    # except:
+                    #     print("User is not in the server")
 
             except socket.error:
                 name = self.connections[c]
