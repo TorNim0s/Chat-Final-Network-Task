@@ -141,6 +141,12 @@ class GUI:
                                 else:
                                     data = f"{split[1]}|{split[2]}"
                                     self.connector.send_file(data, split[3])
+                            elif split[0] == '/download':
+                                if(len(split) != 2):
+                                    self.connector.recieve_message('Wrong number of arguments, use /download <file_name>')
+                                else:
+                                    data = f"{split[1]}"
+                                    self.connector.download_file(data)
                             else:
                                 self.connector.send_message(text)
                             print(text)

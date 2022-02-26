@@ -2,6 +2,7 @@ import pygame
 from pygame import *
 import socket
 import threading
+from socket import timeout
 
 class Client:
     Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
@@ -20,6 +21,7 @@ class Client:
 
             self.s.connect((self.target_ip, self.target_port))
             self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.fs.bind(('', 0))
         except:
             print("Couldn't connect to server")
             exit(1)
@@ -84,10 +86,32 @@ class Client:
                 pass
 
     def send_data(self, data, code, path=None):
+        if code == Client.Codes["DownloadFile"]:
+            data = f"{data}|{self.fs.getsockname()[1]}"
         data = code + "|" + data
         self.s.send(data.encode())
         if(code == Client.Codes["UploadFile"]):
             threading.Thread(target=self.send_file, args=(data,path)).start()
+        elif code == Client.Codes["DownloadFile"]:
+            threading.Thread(target=self.receive_file, args=(data, )).start()
+
+    def receive_file(self, data):
+        data = data.split(sep="|" , maxsplit=2)
+        file_name = data[1]
+        try:
+            with open(file_name, 'wb') as f:
+                file_data = self.fs.recv(1024)
+                while file_data:
+                    f.write(file_data)
+                    self.fs.settimeout(2)
+                    file_data = self.fs.recv(1024)
+
+        except timeout:
+            self.connector.recieve_message(f"received {file_name} successfully!", Client.Codes["Message"])
+        except Exception as e:
+            print(e)
+            self.connector.recieve_message("Error receiving file", Client.Codes["Error"])
+
 
     def send_file(self, data, path):
         data_splited = data.split(sep="|" , maxsplit=2)

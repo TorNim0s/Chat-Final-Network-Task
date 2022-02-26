@@ -35,12 +35,17 @@ class Connector:
     def recieve_message(self, message, code=0):
         if code == Client.Codes["PrivateMessage"]:
             self.data.insert(0, f"*Private* {message}")
+        elif code == Client.Codes["Error"]:
+            self.data.insert(0, f"*Error* {message}")
         else:
             self.data.insert(0, message)
         self.gui.update(message)
 
     def send_file(self, data, path):
         self.client.send_data(data, Client.Codes["UploadFile"], path)
+
+    def download_file(self, data):
+        self.client.send_data(data, Client.Codes["DownloadFile"])
 
     def set_client_info(self, name, ip, port):
         self.name = name
