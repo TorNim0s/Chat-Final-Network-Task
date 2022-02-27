@@ -1,7 +1,7 @@
 import socket
 from socket import timeout
 import threading
-
+import time
 
 """
 Create a server with a socket and a thread
@@ -9,7 +9,7 @@ max 24 clients can connect to the server at the same time
 """
 
 Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
-         "DownloadFile": '105', "Error": '105'}
+         "DownloadFile": '105', "GetFiles":'106', "Error": '107'}
 
 class Server:
 
@@ -88,59 +88,60 @@ class Server:
             print("Error sending data to %s" % (self.connections[sock]))
 
     def handle_client_file(self, sock, data, code, addr, name):
-        while True:
-            try:
-                # data = c.recv(1024)
-                # data = data.decode()
-                data = data.split("|")
-                if code == Codes["DownloadFile"]:
-                    file_name = data[1]
-                    addr = (addr[0], int(data[2]))
+        try:
+            # data = c.recv(1024)
+            # data = data.decode()
+            print(data)
+            data = data.split("|")
+            if code == Codes["DownloadFile"]:
+                file_name = data[1]
+                addr = (addr[0], int(data[2]))
 
-                    try:
-                        with open(file_name, "rb") as f:
-                            file_data = f.read(1024)
-                            while file_data:
-                                if (self.fs.sendto(file_data, addr)):
-                                    print("Sending file to %s" % (name))
-                                    file_data = f.read(1024)
-                    except FileNotFoundError:
-                        print("File not found")
-                        # self.PrivateMessage(self.s, sock, f"Server: File {file_name} is not in the server".encode())
-
-                    # file_data = file_data.encode() # change this to get the file data
-                    # self.fs.sendto(file_data, addr)
-                    print(f"File {file_name} has been sent to {addr[0]}")
-                    # self.PrivateMessage(self.s, sock, f"Server: File {file_name} is has succesfully sent to you!".encode())
-
-                elif code == Codes["UploadFile"]:
-                    file_name = data[1]
-                    file_size = data[2]
-                    print("Saving file %s" % file_name)
-                    with open(file_name, 'wb') as f:
-                        file_data = self.fs.recv(1024)
+                try:
+                    with open(file_name, "rb") as f:
+                        file_data = f.read(1024)
                         while file_data:
-                            f.write(file_data)
-                            self.fs.settimeout(2)
-                            file_data = self.fs.recv(1024)
-                    # file_data = self.fs.recv(1024)
-                    # print(f"File {file_name} has been sent to {addr[0]}")
-                    # self.sendmessage(c, file_data)
-                    print(f"File {file_name} has been received from {addr[0]} known as : {name}")
-                    self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(),
-                                   Codes["Message"])
-                    self.files.append(file_name)
+                            if (self.fs.sendto(file_data, addr)):
+                                print("Sending file to %s" % (name))
+                                file_data = f.read(1024)
+                except FileNotFoundError:
+                    print("File not found")
+                    error = f"{Codes['Error']}|Server: File not found"
+                    self.sendmessage(sock, error.encode())
+                    # self.PrivateMessage(self.s, sock, f"Server: File {file_name} is not in the server".encode())
 
+                # file_data = file_data.encode() # change this to get the file data
+                # self.fs.sendto(file_data, addr)
+                # print(f"File {file_name} has been sent to {addr[0]}")
+                # self.PrivateMessage(self.s, sock, f"Server: File {file_name} is has succesfully sent to you!".encode())
 
-                elif code == Codes["Error"]:
-                    print(data[1])
-                    self.fs.close()
-                    break
-            except timeout:
+            elif code == Codes["UploadFile"]:
+                file_name = data[1]
+                file_size = data[2]
+                print("Saving file %s" % file_name)
+                with open(file_name, 'wb') as f:
+                    file_data = self.fs.recv(1024)
+                    while file_data:
+                        f.write(file_data)
+                        self.fs.settimeout(2)
+                        file_data = self.fs.recv(1024)
+                # file_data = self.fs.recv(1024)
+                # print(f"File {file_name} has been sent to {addr[0]}")
+                # self.sendmessage(c, file_data)
                 print(f"File {file_name} has been received from {addr[0]} known as : {name}")
-                self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(), Codes["Message"])
+                self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(),
+                               Codes["Message"])
                 self.files.append(file_name)
-                break
+
+
+            elif code == Codes["Error"]:
+                print(f"Error: {data[1]}")
+                # self.fs.close()
+
+        except timeout:
+            print(f"File {file_name} has been received from {addr[0]} known as : {name}")
+            self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(), Codes["Message"])
+            self.files.append(file_name)
             # except Exception as e:
             #     print("Error receiving data from %s:%s" % (addr[0], addr[1]))
             #     print(e)
@@ -164,6 +165,15 @@ class Server:
                     self.broadcast(c, data.encode(), code=Codes["Message"])
                 elif data_splited[0] == Codes["UploadFile"] or data_splited[0] == Codes["DownloadFile"]:
                     threading.Thread(target=self.handle_client_file, args=(c, data, data_splited[0], addr, self.connections[c])).start()
+                elif data_splited[0] == Codes["GetFiles"]:
+                    starts = int(data_splited[1])
+                    for i in range(starts, starts+10):
+                        time.sleep(0.05)
+                        if i >= len(self.files):
+                            break
+                        data = f"{Codes['Message']}|{self.files[i]}"
+                        self.sendmessage(c, data.encode())
+
                 elif data_splited[0] == Codes["PrivateMessage"]:
                     data = f"{self.connections[c]}: {data_splited[2]}"
                     name = data_splited[1]

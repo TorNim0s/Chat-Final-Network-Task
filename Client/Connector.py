@@ -41,6 +41,9 @@ class Connector:
             self.data.insert(0, message)
         self.gui.update(message)
 
+    def get_files(self, data):
+        self.client.send_data(data, Client.Codes["GetFiles"])
+
     def send_file(self, data, path):
         self.client.send_data(data, Client.Codes["UploadFile"], path)
 

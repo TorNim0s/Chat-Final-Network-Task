@@ -6,7 +6,7 @@ from socket import timeout
 
 class Client:
     Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
-         "DownloadFile": '105', "Error": '105'}
+         "DownloadFile": '105', "GetFiles":'106', "Error": '107'}
 
     def __init__(self, ip, port, name, connector):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -62,7 +62,7 @@ class Client:
                 data = self.s.recv(1024)
 
                 data = data.decode()
-                # print(data)
+                print(data)
                 data_splited = data.split(sep="|" , maxsplit=2)
                 # print(data_splited)
                 if data_splited[0] == Client.Codes["UserJoined"]:
@@ -76,12 +76,13 @@ class Client:
                     self.connector.recieve_message(f"{data_splited[1]} left the chat")
                     self.connector.update_users(self.users)
                 elif data_splited[0] == Client.Codes["Message"]:
-                    print("Hi BRO IM HERE")
-                    print(data_splited[1])
                     self.connector.recieve_message(data_splited[1])
                 elif data_splited[0] == Client.Codes["PrivateMessage"]:
                     print(data_splited[1])
                     self.connector.recieve_message(data_splited[1], Client.Codes["PrivateMessage"])
+                elif data_splited[0] == Client.Codes["Error"]:
+                    print("Error: " + data_splited[1])
+                    self.connector.recieve_message(data_splited[1], Client.Codes["Error"])
             except:
                 pass
 
