@@ -2,12 +2,14 @@ import sys
 
 import pygame as pg
 from LoginGUI import Button
+from tkinter import Tk
+from tkinter import filedialog
 
 class GUI:
     def __init__(self, Connector):
-        self.message = Button('Direct Message', 70, 75, 150, 30, addX=800, addY=500)
-        self.upload = Button('Upload File', 70, 125, 150, 30, addX=800, addY=500)
-        self.download = Button('Download File', 70, 175, 150, 30, addX=800, addY=500)
+        # self.message = Button('Direct Message', 70, 75, 150, 30, addX=800, addY=500)
+        # self.upload = Button('Upload File', 70, 125, 150, 30, addX=800, addY=500)
+        # self.download = Button('Download File', 70, 175, 150, 30, addX=800, addY=500)
 
         pg.init()
 
@@ -56,7 +58,14 @@ class GUI:
         pg.draw.line(self.menu_surface, (255, 255, 255), (280, 0), (280, 720))
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 0), (280, 0))
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 720), (280, 720))
-        self.menu_surface.blit(header.render("Menu", True, (255, 255, 255)), (120, 15))
+        self.menu_surface.blit(header.render("List of Commands", True, (255, 255, 255)), (45, 15))
+        self.menu_surface.blit(f.render("/pm - private message", True, (255, 255, 255)), (10, 60))
+        self.menu_surface.blit(f.render("/upload - upload file", True, (255, 255, 255)), (10, 80))
+        self.menu_surface.blit(f.render("/download - download file", True, (255, 255, 255)), (10, 100))
+        self.menu_surface.blit(f.render("/files - available files", True, (255, 255, 255)), (10, 120))
+        self.menu_surface.blit(f.render("/stop - stop download", True, (255, 255, 255)), (10, 140))
+        self.menu_surface.blit(f.render("/resume - resume download", True, (255, 255, 255)), (10, 160))
+
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 50), (280, 50))
 
 
@@ -98,9 +107,9 @@ class GUI:
         quit = False
         while not quit:
             for e in pg.event.get():
-                self.message.handle_event(e)
-                self.upload.handle_event(e)
-                self.download.handle_event(e)
+                # self.message.handle_event(e)
+                # self.upload.handle_event(e)
+                # self.download.handle_event(e)
 
                 if e.type == pg.QUIT:
                     quit = True
@@ -136,20 +145,26 @@ class GUI:
                             if split[0] == '/pm':
                                 self.connector.send_private_message(' '.join(split[2:]), split[1])
                             elif split[0] == '/upload':
-                                if(len(split) != 4):
-                                    self.connector.recieve_message('Wrong number of arguments, use /upload <file_name> <file_size> <file_path>')
+                                if len(split) != 4:
+                                    # self.connector.recieve_message('Wrong number of arguments, use /upload '
+                                    #                                '<file_name> <file_size> <file_path>')
+                                    Tk().withdraw()
+                                    file_path = filedialog.askopenfilename()  # need to split and take file name
+                                    print(file_path)
                                 else:
                                     data = f"{split[1]}|{split[2]}"
                                     self.connector.send_file(data, split[3])
                             elif split[0] == '/download':
-                                if(len(split) != 2):
-                                    self.connector.recieve_message('Wrong number of arguments, use /download <file_name>')
+                                if len(split) != 2:
+                                    self.connector.recieve_message('Wrong number of arguments, use /download '
+                                                                   '<file_name>')
                                 else:
                                     data = f"{split[1]}"
                                     self.connector.download_file(data)
                             elif split[0] == '/files':
-                                if(len(split) != 2):
-                                    self.connector.recieve_message('Wrong number of arguments, use /files <starting_number>')
+                                if len(split) != 2:
+                                    self.connector.recieve_message('Wrong number of arguments, use /files '
+                                                                   '<starting_number>')
                                 else:
                                     data = f"{split[1]}"
                                     self.connector.get_files(data)
@@ -177,12 +192,12 @@ class GUI:
             self.screen.blit(self.users_surface, (800, self.scroll_users_y))
             self.screen.blit(self.menu_surface, (800, 500))
 
-            self.message.update()
-            self.message.draw(self.menu_surface)
-            self.upload.update()
-            self.upload.draw(self.menu_surface)
-            self.download.update()
-            self.download.draw(self.menu_surface)
+            # self.message.update()
+            # self.message.draw(self.menu_surface)
+            # self.upload.update()
+            # self.upload.draw(self.menu_surface)
+            # self.download.update()
+            # self.download.draw(self.menu_surface)
 
             pg.display.flip()
             clock.tick(30)

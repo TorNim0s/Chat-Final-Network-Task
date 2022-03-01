@@ -4,9 +4,10 @@ import socket
 import threading
 from socket import timeout
 
+
 class Client:
     Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
-         "DownloadFile": '105', "GetFiles":'106', "Error": '107'}
+             "DownloadFile": '105', "GetFiles": '106', "Error": '107'}
 
     def __init__(self, ip, port, name, connector):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,7 +27,7 @@ class Client:
             print("Couldn't connect to server")
             exit(1)
 
-        self.file_addr = (self.target_ip ,int(self.s.recv(1024).decode()))
+        self.file_addr = (self.target_ip, int(self.s.recv(1024).decode()))
 
         self.s.send(self.name.encode())
 
@@ -45,7 +46,6 @@ class Client:
         self.receive_thread = threading.Thread(target=self.receive_server_data).start()
         # self.send_thread = threading.Thread(target=self.send_data_to_server).start()
 
-
     def kill(self):
         self.stop = True
         self.s.close()
@@ -63,7 +63,7 @@ class Client:
 
                 data = data.decode()
                 print(data)
-                data_splited = data.split(sep="|" , maxsplit=2)
+                data_splited = data.split(sep="|", maxsplit=2)
                 # print(data_splited)
                 if data_splited[0] == Client.Codes["UserJoined"]:
                     self.users.append(data_splited[1])
@@ -91,13 +91,13 @@ class Client:
             data = f"{data}|{self.fs.getsockname()[1]}"
         data = code + "|" + data
         self.s.send(data.encode())
-        if(code == Client.Codes["UploadFile"]):
-            threading.Thread(target=self.send_file, args=(data,path)).start()
+        if (code == Client.Codes["UploadFile"]):
+            threading.Thread(target=self.send_file, args=(data, path)).start()
         elif code == Client.Codes["DownloadFile"]:
-            threading.Thread(target=self.receive_file, args=(data, )).start()
+            threading.Thread(target=self.receive_file, args=(data,)).start()
 
     def receive_file(self, data):
-        data = data.split(sep="|" , maxsplit=2)
+        data = data.split(sep="|", maxsplit=2)
         file_name = data[1]
         try:
             with open(file_name, 'wb') as f:
@@ -107,15 +107,14 @@ class Client:
                     self.fs.settimeout(2)
                     file_data = self.fs.recv(1024)
 
-        except timeout:
+        except timeout:  # need to add last bit sent
             self.connector.recieve_message(f"received {file_name} successfully!", Client.Codes["Message"])
         except Exception as e:
             print(e)
             self.connector.recieve_message("Error receiving file", Client.Codes["Error"])
 
-
     def send_file(self, data, path):
-        data_splited = data.split(sep="|" , maxsplit=2)
+        data_splited = data.split(sep="|", maxsplit=2)
         filename = data_splited[1]
         file_size = data_splited[2]
         print(f"Sending {filename}")
@@ -125,11 +124,10 @@ class Client:
         with open(path, "rb") as f:
             bytes_read = f.read(1024)
             # self.fs.send(bytes_read)
-            while(bytes_read):
+            while (bytes_read):
                 if (self.fs.sendto(bytes_read, self.file_addr)):
                     bytes_read = f.read(1024)
         print(f"Sent {filename}")
-
 
     # def send_data_to_server(self):
     #     while not self.stop:
@@ -138,7 +136,6 @@ class Client:
     #             self.s.send(data.encode())
     #         except:
     #             print("Couldn't send data to server")
-
 
 # if __name__ == '__main__':
 #     ip = input("IP: ")
