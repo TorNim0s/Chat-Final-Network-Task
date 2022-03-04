@@ -9,6 +9,8 @@ class Client:
     Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
              "DownloadFile": '105', "GetFiles": '106', "Error": '107'}
 
+    ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK": '203'}
+
     def __init__(self, ip, port, name, connector):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connector = connector

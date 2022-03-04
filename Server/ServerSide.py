@@ -11,6 +11,8 @@ max 24 clients can connect to the server at the same time
 Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
          "DownloadFile": '105', "GetFiles":'106', "Error": '107'}
 
+ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK":'203'}
+
 class Server:
 
     def __init__(self):
@@ -85,7 +87,7 @@ class Server:
                 my_sock.send(data)
             send_sock.send(data)
         except:
-            print("Error sending data to %s" % (self.connections[sock]))
+            print("Error sending data to %s" % (self.connections[send_sock]))
 
     def handle_client_file(self, sock, data, code, addr, name):
         try:
