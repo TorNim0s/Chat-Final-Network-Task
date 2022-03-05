@@ -2,6 +2,7 @@ import socket
 from socket import timeout
 import threading
 import time
+import os
 import UDP_Reliable_SER
 
 """
@@ -99,8 +100,8 @@ class Server:
                 file_name = data[1]
                 addr = (addr[0], int(data[2]))
                 try:
-                    user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Download"], file_name) # need to be fixed!
-                    self.udp_reliable.accepted[addr] = user # doesn't work its not saving because of the other process
+                    user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Download"], file_name)
+                    self.udp_reliable.accepted[addr] = user
                     ok_message = f"{Codes['DownloadFile']}|OK"
                     self.sendmessage(sock, ok_message.encode())
                     # try:
@@ -173,11 +174,13 @@ class Server:
                     self.handle_client_file(c, data, data_splited[0], addr, self.connections[c])
                 elif data_splited[0] == Codes["GetFiles"]:
                     starts = int(data_splited[1])
+                    files = os.listdir('./files')
+                    print (files)
                     for i in range(starts, starts+10):
                         time.sleep(0.05)
-                        if i >= len(self.files):
+                        if i >= len(files):
                             break
-                        data = f"{Codes['Message']}|{self.files[i]}"
+                        data = f"{Codes['Message']}|{files[i]}"
                         self.sendmessage(c, data.encode())
 
                 elif data_splited[0] == Codes["PrivateMessage"]:

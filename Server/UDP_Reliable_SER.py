@@ -3,7 +3,6 @@ from socket import timeout
 import threading
 import time
 from multiprocessing import Process
-from ServerSide import Server
 
 ReliableCode = {"ACK": '200', "SYN": '201', "SYN_ACK": '202', "Post": '203', "DIS": '204',
                 "DIS_SYN": '205', "MID_PAUSE": '206', "MID_PAUSE_ACK": '207'}
@@ -159,7 +158,7 @@ class UDP_Reliable_Server:
                     self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, ReliableCode["DIS"]))
                     self.accepted[addr].process.start()
 
-                    with open(self.accepted[addr].file_name, "w") as file:
+                    with open(f"./files/{self.accepted[addr].file_name}", "w") as file:
                         for line in self.accepted[addr].data:
                             file.write(line)
 
@@ -232,7 +231,7 @@ class User:
         self.data = []
         self.process = None
 
-        with open(self.file_name, "rb") as file:
+        with open(f"./files/{self.file_name}", "rb") as file:
             data_line = file.read(1000)
             while data_line:
                 self.data.append(data_line)

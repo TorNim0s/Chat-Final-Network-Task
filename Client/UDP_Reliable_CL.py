@@ -4,7 +4,6 @@ import threading
 import time
 from multiprocessing import Process
 
-
 ReliableCode = {"ACK": '200', "SYN": '201', "SYN_ACK": '202', "Post": '203', "DIS": '204',
                 "DIS_SYN": '205', "MID_PAUSE": '206', "MID_PAUSE_ACK": '207'}
 
