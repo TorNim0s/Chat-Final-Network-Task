@@ -1,35 +1,12 @@
 import socket
 from socket import timeout
+import threading
 import time
 from multiprocessing import Process
 
 
 ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK": '203', "Post": '204', "DIS": '205',
                 "DIS_SYN": '206'}
-
-class User:
-
-    MODES = {"Download":0, "Upload":1}
-
-    def __init__(self, mode, file_name):
-        self.waiting = False
-        self.seq = 0
-        self.ack = 0
-        self.mode = mode
-        self.current = 0
-        self.file_name = file_name
-        self.data = []
-        self.process = None
-
-        with open(self.file_name, "rb") as file:
-            data_line = file.read(1000)
-            while data_line:
-                self.data.append(data_line)
-                data_line = file.read(1000)
-
-
-        self.other_dis = False
-        self.me_dis = False
 
 class UDP_Reliable_Server:
 
@@ -54,7 +31,7 @@ class UDP_Reliable_Server:
         self.init()
 
     def init(self):
-        Process(target=self.handle_clients, args=()).start()
+        threading.Thread(target=self.handle_clients, args=()).start()
 
     def stop(self):
         self.end = True
@@ -88,13 +65,19 @@ class UDP_Reliable_Server:
 
                 if self.accepted[addr].mode == User.MODES["Download"]:
                     print(f"Starting to send file to {addr}")
-                    self.accepted[addr].seq = len(self.accepted[addr].data[self.accepted[addr].current])
+                    if self.accepted[addr].current == len(self.accepted[addr].data):
+                        self.accepted[addr].seq += 1
+                    else:
+                        self.accepted[addr].seq = len(self.accepted[addr].data[self.accepted[addr].current])
                     message = "{}|{}|{}".format(ReliableCode["Post"],self.accepted[addr].seq,
                                                    self.accepted[addr].ack)
-                    self.fs.sendto(message.encode(), addr)
-                    self.fs.sendto(self.accepted[addr].data[self.accepted[addr].current], addr)
                     self.accepted[addr].waiting = True
-                    self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, message, self.accepted[addr].data[self.accepted[addr].current]))
+                    self.fs.sendto(message.encode(), addr)
+                    if self.accepted[addr].current != len(self.accepted[addr].data):
+                        self.fs.sendto(self.accepted[addr].data[self.accepted[addr].current], addr)
+                        self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, message, self.accepted[addr].data[self.accepted[addr].current]))
+                    else:
+                        self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, message))
                     self.accepted[addr].process.start()
 
                 continue
@@ -224,6 +207,27 @@ class UDP_Reliable_Server:
                 self.fs.sendto(message2, addr)
             self.timer_to_send(addr, time_amount+0.5, data)
 
+class User:
+    MODES = {"Download":0, "Upload":1}
 
+    def __init__(self, mode, file_name):
+        self.waiting = False
+        self.seq = 0
+        self.ack = 0
+        self.mode = mode
+        self.current = 0
+        self.file_name = file_name
+        self.data = []
+        self.process = None
+
+        with open(self.file_name, "rb") as file:
+            data_line = file.read(1000)
+            while data_line:
+                self.data.append(data_line)
+                data_line = file.read(1000)
+
+
+        self.other_dis = False
+        self.me_dis = False
 # if __name__ == '__main__':
 #     server = UDP_Reliable_Server()

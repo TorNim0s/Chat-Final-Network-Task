@@ -20,14 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3f58619-c221-4b56-a8c0-690826823968" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Server/aaaa.txt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Server/eldad.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Chat-Final-Network-Task.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Chat-Final-Network-Task.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ClientSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientSide.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/part2_cl.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/ServerSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ServerSide.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/part2_ser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +197,7 @@
       <workItem from="1646389505126" duration="39000" />
       <workItem from="1646389559077" duration="369000" />
       <workItem from="1646393308165" duration="1735000" />
-      <workItem from="1646399840726" duration="4600000" />
+      <workItem from="1646399840726" duration="6202000" />
     </task>
     <servers />
   </component>
@@ -221,7 +217,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ClientSide_py$ClientSide.coverage" NAME="ClientSide Coverage Results" MODIFIED="1646402145583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1646403089632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1646403088122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
+    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1646474180972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
+    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1646474179043" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
   </component>
 </project>
