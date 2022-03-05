@@ -168,6 +168,11 @@ class GUI:
                                 else:
                                     data = f"{split[1]}"
                                     self.connector.get_files(data)
+                            elif split[0] == "/resume":
+                                if(len(split) != 1):
+                                    self.connector.recieve_message('Wrong number of arguments, use /resume ')
+                                else:
+                                    self.connector.client.udp_reliable_connection.send_resume()
                             else:
                                 self.connector.send_message(text)
                             print(text)

@@ -4,8 +4,9 @@ import threading
 import time
 from multiprocessing import Process
 
-ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK": '203', "Post": '204', "DIS": '205',
-                "DIS_SYN": '206'}
+
+ReliableCode = {"ACK": '200', "SYN": '201', "SYN_ACK": '202', "Post": '203', "DIS": '204',
+                "DIS_SYN": '205', "MID_PAUSE": '206', "MID_PAUSE_ACK": '207'}
 
 ReadSize = 1000 # read 1000 bytes from file each time
 MODES = {"Download": 0, "Upload": 1}
@@ -37,6 +38,7 @@ class UDP_Reliable_Client:
         self.other_dis = False
         self.me_dis = False
         self.process = None
+        self.pause = False
 
     def init(self):
         self.end = False
@@ -48,6 +50,7 @@ class UDP_Reliable_Client:
         self.seq = 0
         self.current = 0
         self.process = None
+        self.pause = False
         Process(target=self.file_handle, args=()).start()
 
     def close(self):
@@ -60,11 +63,22 @@ class UDP_Reliable_Client:
             self.process.terminate()
             self.process = None
 
+    def send_resume(self):
+        server_addr = (self.serverip, self.serverport)
+        code = ReliableCode["ACK"]
+        message = f"{code}|{self.seq}|{self.ack}"
+        self.fs.sendto(message.encode(), server_addr)
+
+        self.check_process()
+        self.process = Process(target=self.timer_to_send, args=(1, message))
+        self.process.start()
+
     def file_handle(self):
         server_addr = (self.serverip, self.serverport)
 
         self.wait = True
         self.fs.sendto(ReliableCode["SYN"].encode(), server_addr)
+        self.check_process()
         self.process = Process(target=self.timer_to_send, args=(1, ReliableCode["SYN"]))
         self.process.start()
 
@@ -140,12 +154,22 @@ class UDP_Reliable_Client:
                     self.wait = True
                     threading.Thread(target=self.timer_to_send, args=(1, message)).start()
 
+            elif(data[0] == ReliableCode["MID_PAUSE"]):
+                self.pause = True
+                self.fs.sendto(ReliableCode["MID_PAUSE_ACK"].encode(), addr)
+
+                # try:
+                #     self.data.pop()
+                # except:
+                #     pass
+
             elif(data[0] == ReliableCode["Post"]):
                 if (self.mode != MODES["Download"]):
                     continue
 
                 seq = int(data[1])
                 ack = int(data[2])
+                self.check_process()
 
                 if (seq - self.ack == 1):
                     self.seq += 1
@@ -156,7 +180,7 @@ class UDP_Reliable_Client:
                     self.fs.sendto(ReliableCode["DIS"].encode(), addr)
                     self.waiting = True
 
-                    self.check_process()
+                    # self.check_process()
 
                     self.process = Process(target=self.timer_to_send, args=(1, ReliableCode["DIS"]))
                     self.process.start()

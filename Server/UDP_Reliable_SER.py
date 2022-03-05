@@ -3,10 +3,10 @@ from socket import timeout
 import threading
 import time
 from multiprocessing import Process
+from ServerSide import Server
 
-
-ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK": '203', "Post": '204', "DIS": '205',
-                "DIS_SYN": '206'}
+ReliableCode = {"ACK": '200', "SYN": '201', "SYN_ACK": '202', "Post": '203', "DIS": '204',
+                "DIS_SYN": '205', "MID_PAUSE": '206', "MID_PAUSE_ACK": '207'}
 
 class UDP_Reliable_Server:
 
@@ -105,6 +105,14 @@ class UDP_Reliable_Server:
                         self.accepted[addr].process.start()
                         continue
 
+                    if(self.accepted[addr].current >= len(self.accepted[addr].data)/2 and not self.accepted[addr].mid):
+                        self.accepted[addr].mid = True
+                        message = ReliableCode["MID_PAUSE"]
+                        self.accepted[addr].waiting = True
+                        self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, message))
+                        self.accepted[addr].process.start()
+                        continue
+
                     self.accepted[addr].ack = seq
                     self.accepted[addr].current += 1
                     message = ""
@@ -115,6 +123,7 @@ class UDP_Reliable_Server:
                         self.accepted[addr].seq += 1
                         message = "{}|{}|{}".format(ReliableCode["Post"], self.accepted[addr].seq, self.accepted[addr].ack)
                         send_the_data = False
+
                     else:
                         self.accepted[addr].seq += len(self.accepted[addr].data[self.accepted[addr].current])
                         message = "{}|{}|{}".format(ReliableCode["Post"], self.accepted[addr].seq,
@@ -167,6 +176,9 @@ class UDP_Reliable_Server:
                 message = "%s|%s|%s".format(ReliableCode["ACK"], self.accepted[addr].seq, self.accepted[addr].ack)
                 self.fs.sendto(message.encode(), addr)
 
+            elif(data[0] == ReliableCode["MID_PAUSE_ACK"]):
+                self.accepted[addr].pause = True
+                self.kill_process(addr)
 
             elif(data[0] == ReliableCode["DIS"]):
                 self.kill_process(addr)
@@ -229,5 +241,7 @@ class User:
 
         self.other_dis = False
         self.me_dis = False
+        self.mid = False
+        self.pause = False
 # if __name__ == '__main__':
 #     server = UDP_Reliable_Server()

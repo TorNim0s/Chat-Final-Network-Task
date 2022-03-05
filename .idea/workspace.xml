@@ -20,10 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3f58619-c221-4b56-a8c0-690826823968" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Server/aaaa.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/eldad.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GUI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/aaaa.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/eldad.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/aaaa.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/eldad.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +133,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="UDP_Reliable_CL" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="UDP_Reliable_CL (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Chat-Final-Network-Task" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -141,8 +145,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="D:\מדמח\שנה ב\תקשורת\פרויקט גמר\Client\UDP_Reliable_CL.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -163,8 +166,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="D:\מדמח\שנה ב\תקשורת\פרויקט גמר\Server\UDP_Reliable_SER.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -178,12 +180,12 @@
         <item itemvalue="Python.Connector" />
         <item itemvalue="Python.ServerSide" />
         <item itemvalue="Python.ClientSide" />
-        <item itemvalue="Python.UDP_Reliable_CL" />
         <item itemvalue="Python.UDP_Reliable_SER" />
+        <item itemvalue="Python.UDP_Reliable_CL (1)" />
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -214,10 +216,24 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ClientSide_py$ClientSide.coverage" NAME="ClientSide Coverage Results" MODIFIED="1646402145583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1646474180972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1646474179043" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
+  <component name="WindowStateProjectService">
+    <state width="1899" height="158" key="GridCell.Tab.0.bottom" timestamp="1646485998905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="158" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1646485998905" />
+    <state width="1899" height="158" key="GridCell.Tab.0.center" timestamp="1646485998905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="158" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1646485998905" />
+    <state width="1899" height="158" key="GridCell.Tab.0.left" timestamp="1646485998905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="158" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1646485998905" />
+    <state width="1899" height="158" key="GridCell.Tab.0.right" timestamp="1646485998905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="158" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1646485998905" />
   </component>
 </project>
