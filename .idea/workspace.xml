@@ -20,13 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3f58619-c221-4b56-a8c0-690826823968" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Server/files/test1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/aa.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ClientSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientSide.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/a.png" beforeDir="false" afterPath="$PROJECT_DIR$/Server/files/a.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/ServerSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ServerSide.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/a.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +134,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="UDP_Reliable_SER" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="aa" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Chat-Final-Network-Task" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -149,7 +146,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server/aa.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -183,9 +180,9 @@
       <list>
         <item itemvalue="Python.Connector" />
         <item itemvalue="Python.ServerSide" />
+        <item itemvalue="Python.aa" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.ClientSide" />
-        <item itemvalue="Python.UDP_Reliable_SER" />
       </list>
     </recent_temporary>
   </component>
@@ -223,21 +220,21 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1899" height="158" key="GridCell.Tab.0.bottom" timestamp="1646494121468">
+    <state width="1899" height="158" key="GridCell.Tab.0.bottom" timestamp="1646497475996">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1646494121468" />
-    <state width="1899" height="158" key="GridCell.Tab.0.center" timestamp="1646494121467">
+    <state width="1899" height="158" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1646497475996" />
+    <state width="1899" height="158" key="GridCell.Tab.0.center" timestamp="1646497475995">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1646494121467" />
-    <state width="1899" height="158" key="GridCell.Tab.0.left" timestamp="1646494121467">
+    <state width="1899" height="158" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1646497475995" />
+    <state width="1899" height="158" key="GridCell.Tab.0.left" timestamp="1646497475995">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1646494121467" />
-    <state width="1899" height="158" key="GridCell.Tab.0.right" timestamp="1646494121467">
+    <state width="1899" height="158" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1646497475995" />
+    <state width="1899" height="158" key="GridCell.Tab.0.right" timestamp="1646497475996">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1646494121467" />
+    <state width="1899" height="158" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1646497475996" />
   </component>
 </project>

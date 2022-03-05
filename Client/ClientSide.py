@@ -30,7 +30,7 @@ class Client:
             exit(1)
 
         self.file_addr = (self.target_ip, int(self.s.recv(1024).decode()))
-        self.udp_reliable_connection = UDP_Reliable_CL.UDP_Reliable_Client(self.file_addr[0], self.file_addr[1])
+        self.udp_reliable_connection = UDP_Reliable_CL.UDP_Reliable_Client(self.file_addr[0], self.file_addr[1], self.connector.recieve_message)
 
         self.s.send(self.name.encode())
         # Receive data from server
