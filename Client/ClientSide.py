@@ -83,7 +83,7 @@ class Client:
                 elif data_splited[0] == Client.Codes["Error"]:
                     print("Error: " + data_splited[1])
                     self.connector.recieve_message(data_splited[1], Client.Codes["Error"])
-                elif data_splited[0] == Client.Codes["DownloadFile"]:
+                elif data_splited[0] == Client.Codes["DownloadFile"] or data_splited[0] == Client.Codes["UploadFile"]:
                     if(data_splited[1] == "OK"):
                         self.udp_reliable_connection.init()
             except:
@@ -91,8 +91,8 @@ class Client:
 
     def send_data(self, data, code, path=None):
         self.udp_reliable_connection.file_name = data
+        data = f"{data}|{self.udp_reliable_connection.fs.getsockname()[1]}"
         if code == Client.Codes["DownloadFile"]:
-            data = f"{data}|{self.udp_reliable_connection.fs.getsockname()[1]}"
             self.udp_reliable_connection.mode = UDP_Reliable_CL.MODES["Download"]
         else:
             self.udp_reliable_connection.mode = UDP_Reliable_CL.MODES["Upload"]

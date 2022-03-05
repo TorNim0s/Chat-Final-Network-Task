@@ -124,21 +124,25 @@ class Server:
 
             elif code == Codes["UploadFile"]:
                 file_name = data[1]
-                file_size = data[2]
+                addr = (addr[0], int(data[2]))
                 print("Saving file %s" % file_name)
-                with open(file_name, 'wb') as f:
-                    file_data = self.fs.recv(1024)
-                    while file_data:
-                        f.write(file_data)
-                        self.fs.settimeout(2)
-                        file_data = self.fs.recv(1024)
-                # file_data = self.fs.recv(1024)
-                # print(f"File {file_name} has been sent to {addr[0]}")
-                # self.sendmessage(c, file_data)
-                print(f"File {file_name} has been received from {addr[0]} known as : {name}")
-                self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(),
-                               Codes["Message"])
-                self.files.append(file_name)
+                user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Upload"], file_name)
+                self.udp_reliable.accepted[addr] = user
+                ok_message = f"{Codes['UploadFile']}|OK"
+                self.sendmessage(sock, ok_message.encode())
+                # with open(file_name, 'wb') as f:
+                #     file_data = self.fs.recv(1024)
+                #     while file_data:
+                #         f.write(file_data)
+                #         self.fs.settimeout(2)
+                #         file_data = self.fs.recv(1024)
+                # # file_data = self.fs.recv(1024)
+                # # print(f"File {file_name} has been sent to {addr[0]}")
+                # # self.sendmessage(c, file_data)
+                # print(f"File {file_name} has been received from {addr[0]} known as : {name}")
+                # self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(),
+                #                Codes["Message"])
+                # self.files.append(file_name)
 
 
             elif code == Codes["Error"]:

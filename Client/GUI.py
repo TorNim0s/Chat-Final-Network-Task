@@ -145,15 +145,15 @@ class GUI:
                             if split[0] == '/pm':
                                 self.connector.send_private_message(' '.join(split[2:]), split[1])
                             elif split[0] == '/upload':
-                                if len(split) != 4:
-                                    # self.connector.recieve_message('Wrong number of arguments, use /upload '
-                                    #                                '<file_name> <file_size> <file_path>')
-                                    Tk().withdraw()
-                                    file_path = filedialog.askopenfilename()  # need to split and take file name
-                                    print(file_path)
+                                if len(split) != 3:
+                                    self.connector.recieve_message('Wrong number of arguments, use /upload '
+                                                                   '<file_save_name> <file_name>')
+                                    # Tk().withdraw()
+                                    # file_path = filedialog.askopenfilename()  # need to split and take file name
+                                    # print(file_path)
                                 else:
-                                    data = f"{split[1]}|{split[2]}"
-                                    self.connector.send_file(data, split[3])
+                                    data = f"{split[1]}"
+                                    self.connector.send_file(data, split[2])
                             elif split[0] == '/download':
                                 if len(split) != 2:
                                     self.connector.recieve_message('Wrong number of arguments, use /download '

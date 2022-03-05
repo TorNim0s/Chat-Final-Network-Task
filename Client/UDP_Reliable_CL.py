@@ -50,7 +50,7 @@ class UDP_Reliable_Client:
         self.current = 0
         self.thread = None
         self.pause = False
-        threading.Thread(target=self.file_handle, args=()).start()
+        threading.Thread(target=self.file_handle, args=[]).start()
 
     def close(self):
         self.check_thread()
@@ -68,7 +68,7 @@ class UDP_Reliable_Client:
         self.fs.sendto(message.encode(), server_addr)
 
         self.check_thread()
-        self.thread = threading.Thread(target=self.timer_to_send, args=(1, message))
+        self.thread = threading.Thread(target=self.timer_to_send, args=[1, message])
         self.wait[self.thread.getName()] = True
         self.thread.start()
 
@@ -77,7 +77,7 @@ class UDP_Reliable_Client:
 
         self.fs.sendto(ReliableCode["SYN"].encode(), server_addr)
         self.check_thread()
-        self.thread = threading.Thread(target=self.timer_to_send, args=(1, ReliableCode["SYN"]))
+        self.thread = threading.Thread(target=self.timer_to_send, args=[1, ReliableCode["SYN"]])
         self.wait[self.thread.getName()] = True
         self.thread.start()
 
@@ -105,16 +105,36 @@ class UDP_Reliable_Client:
                 print("Connected to server - SYN_ACK received")
 
                 if self.mode == MODES["Upload"]:
+                    print(self.file_name)
+                    try:
+                        with open(f"./files/{self.file_name}", "rb") as file:
+                            data_line = file.read(1024)
+                            while data_line:
+                                self.data.append(data_line)
+                                data_line = file.read(1024)
+                    except:
+                        print("Error, File not found!")
+                        self.close()
+                        break
+
                     print("Start sending file")
 
-                    self.seq = len(self.data[self.current])
-                    message = "{}|{}|{}|{}".format(ReliableCode["Post"], self.seq, self.ack, self.data[self.current])
+                    if self.current == len(self.data):
+                        self.seq += 1
+                    else:
+                        self.seq = len(self.data[self.current])
+                    message = "{}|{}|{}".format(ReliableCode["Post"], self.seq, self.ack)
                     self.fs.sendto(message.encode(), addr)
-                    self.current += 1
                     self.check_thread()
-                    self.thread = threading.Thread(target=self.timer_to_send, args=(1, message)).start()
+                    if self.current != len(self.data):
+                        self.fs.sendto(self.data[self.current], addr)
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[1, message,
+                                                                                        self.data[self.current]])
+                    else:
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[1, message])
                     self.wait[self.thread.getName()] = True
                     self.thread.start()
+
                 continue
 
             if(not self.connected):
@@ -127,30 +147,44 @@ class UDP_Reliable_Client:
                 self.check_thread()
 
                 if self.mode == MODES["Upload"]:
-                    seq = data[1]
-                    ack = data[2]
+                    seq = int(data[1])
+                    ack = int(data[2])
 
-                    self.ack = seq
-
-                    if(ack != self.seq):
-                        message = "{}|{}|{}|{}".format(ReliableCode["Post"], self.seq, self.ack, self.data[self.current])
+                    if (ack != self.seq):
+                        print("Lost packet")
+                        message = "{}|{}|{}".format(ReliableCode["Post"], self.seq,self.ack)
                         self.fs.sendto(message.encode(), addr)
+                        self.fs.sendto(self.data[self.current], addr)
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, message,
+                                                                                        self.data[self.current]])
+                        self.wait[self.thread.getName()] = True
+                        self.thread.start()
                         continue
 
+                    self.ack = seq
                     self.current += 1
-                    if (self.current < len(self.data)):
-                        self.seq += len(self.data[self.current])
-
                     message = ""
 
-                    if(self.current == len(self.data)):
-                        message = "{}|{}|{}|0".format(ReliableCode["Post"], self.seq, self.ack)
+                    send_the_data = True
+
+                    if (self.current == len(self.data)):
+                        self.seq += 1
+                        message = "{}|{}|{}".format(ReliableCode["Post"], self.seq, self.ack)
+                        send_the_data = False
+
                     else:
-                        message = "{}|{}|{}|{}".format(ReliableCode["Post"], self.seq, self.ack, self.data[self.current])
+                        self.seq += len(self.data[self.current])
+                        message = "{}|{}|{}".format(ReliableCode["Post"], self.seq, self.ack)
 
                     self.fs.sendto(message.encode(), addr)
-                    self.thread = threading.Thread(target=self.timer_to_send, args=(1, message)).start()
-                    self.wait[self.thread.getName()] = True
+                    if send_the_data:
+                        self.fs.sendto(self.data[self.current], addr)
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, message,
+                                                                                        self.data[self.current]])
+                        self.wait[self.thread.getName()] = True
+                    else:
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, message])
+                        self.wait[self.thread.getName()] = True
                     self.thread.start()
 
 
@@ -178,15 +212,16 @@ class UDP_Reliable_Client:
 
                     # self.check_process()
 
-                    self.thread = threading.Thread(target=self.timer_to_send, args=(1, ReliableCode["DIS"]))
+                    self.thread = threading.Thread(target=self.timer_to_send, args=[1, ReliableCode["DIS"]])
                     self.wait[self.thread.getName()] = True
                     self.thread.start()
 
-                    with open(self.file_name, "wb") as file:
+                    with open(f"./files/{self.file_name}", "wb") as file:
                         for line in self.data:
                             file.write(line)
 
-                    self.notification_function("System: The file is successfully downloaded.")
+                    last_part = data.pop()
+                    self.notification_function("System: The file is successfully downloaded - last byte: {}".format(last_part[-1:]))
 
                     continue
 
@@ -207,7 +242,7 @@ class UDP_Reliable_Client:
 
             elif (data[0] == ReliableCode["DIS"]):
 
-                print("Other wants to disconnect")
+                print("Server wants to disconnect")
                 self.other_dis = True
                 self.fs.sendto(ReliableCode["DIS_SYN"].encode(), addr)
 
@@ -220,7 +255,7 @@ class UDP_Reliable_Client:
                 self.waiting = True
                 self.check_thread()
 
-                self.thread = threading.Thread(target=self.timer_to_send, args=(addr, 1, ReliableCode["DIS"]))
+                self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, ReliableCode["DIS"]])
                 self.wait[self.thread.getName()] = True
                 self.thread.start()
 
@@ -232,7 +267,7 @@ class UDP_Reliable_Client:
                     break
         print("Finished!")
 
-    def timer_to_send(self, time_amount, data):
+    def timer_to_send(self, time_amount, data, message2= None):
         server_addr = (self.serverip, self.serverport)
         time.sleep(time_amount)
         if (time_amount > 3):
@@ -241,6 +276,8 @@ class UDP_Reliable_Client:
 
         elif(self.wait[threading.current_thread().getName()] == True):
             self.fs.sendto(data.encode(), server_addr)
+            if (message2 != None):
+                self.fs.sendto(message2, server_addr)
             self.timer_to_send(time_amount+0.5, data)
 
 if __name__ == '__main__':

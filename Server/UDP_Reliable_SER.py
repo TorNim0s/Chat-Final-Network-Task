@@ -147,20 +147,26 @@ class UDP_Reliable_Server:
 
                 seq = int(data[1])
                 ack = int(data[2])
-                file_data = data[3]
+                self.kill_process(addr)
 
-                if (seq - self.accepted[addr].ack == 0):
-                    message = "%s|%s|%s".format(ReliableCode["ACK"], self.accepted[addr].seq, self.accepted[addr].ack)
-                    self.fs.sendto(message.encode(), addr)
+                if (seq - self.accepted[addr].ack == 1):
+                    # message = "%s|%s|%s".format(ReliableCode["ACK"], self.accepted[addr].seq, self.accepted[addr].ack)
+                    # self.fs.sendto(message.encode(), addr)
 
                     self.fs.sendto(ReliableCode["DIS"].encode(), addr)
+
                     self.accepted[addr].waiting = True
                     self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, ReliableCode["DIS"]))
                     self.accepted[addr].process.start()
 
-                    with open(f"./files/{self.accepted[addr].file_name}", "w") as file:
+                    with open(f"./files/{self.accepted[addr].file_name}", "wb") as file:
                         for line in self.accepted[addr].data:
                             file.write(line)
+
+                    print("Got the file successfully")
+                    continue
+
+                file_data, addr = self.fs.recvfrom(1024)
 
                 if(seq - self.accepted[addr].ack != len(file_data) or ack != self.accepted[addr].seq):
                     code = ReliableCode["ACK"]
@@ -172,7 +178,7 @@ class UDP_Reliable_Server:
                 self.accepted[addr].seq += 1
                 self.accepted[addr].data.append(file_data)
 
-                message = "%s|%s|%s".format(ReliableCode["ACK"], self.accepted[addr].seq, self.accepted[addr].ack)
+                message = "{}|{}|{}".format(ReliableCode["ACK"], self.accepted[addr].seq, self.accepted[addr].ack)
                 self.fs.sendto(message.encode(), addr)
 
             elif(data[0] == ReliableCode["MID_PAUSE_ACK"]):
@@ -232,10 +238,10 @@ class User:
         self.process = None
 
         with open(f"./files/{self.file_name}", "rb") as file:
-            data_line = file.read(1000)
+            data_line = file.read(1024)
             while data_line:
                 self.data.append(data_line)
-                data_line = file.read(1000)
+                data_line = file.read(1024)
 
 
         self.other_dis = False
