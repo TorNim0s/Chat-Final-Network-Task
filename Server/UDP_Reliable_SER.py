@@ -11,7 +11,7 @@ class User:
 
     MODES = {"Download":0, "Upload":1}
 
-    def __init__(self, mode=0, file_name="Sketchpad.png"):
+    def __init__(self, mode, file_name):
         self.waiting = False
         self.seq = 0
         self.ack = 0
@@ -31,13 +31,13 @@ class User:
         self.other_dis = False
         self.me_dis = False
 
-class Server:
+class UDP_Reliable_Server:
 
-    def __init__(self):
+    def __init__(self, fileport):
         self.ip = socket.gethostbyname(socket.gethostname()) # get ip of the server
         while 1: # infinite loop
             try:
-                self.file_port = 2222
+                self.file_port = fileport
                 self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 self.fs.bind((self.ip, self.file_port))
 
@@ -60,6 +60,7 @@ class Server:
         self.end = True
 
     def kill_process(self, addr):
+
         if (self.accepted[addr].process != None):
             self.accepted[addr].process.terminate()
             self.accepted[addr].process = None
@@ -68,14 +69,19 @@ class Server:
         while not self.end:
             data_coded, addr = self.fs.recvfrom(1024)
 
-            data = data_coded.decode()
+            try:
+                data = data_coded.decode()
+            except:
+                continue
 
             print(f"{data} -- from -- {addr}")
 
             data = data.split(sep="|", maxsplit=3)
 
+            print(self.accepted)
+
             if(data[0] == ReliableCode["SYN"]):
-                self.accepted[addr] = User()
+                # self.accepted[addr] = User(0, "eldad.txt")
                 self.fs.sendto(ReliableCode["SYN_ACK"].encode(), addr)
                 self.accepted[addr].waiting = True
                 print(f"Received SYN from {addr}")
@@ -208,9 +214,9 @@ class Server:
     def timer_to_send(self, addr, time_amount, data, message2= None):
         time.sleep(time_amount)
         if (time_amount > 3):
-            self.kill_process(addr)
             self.accepted[addr].waiting = False
             self.accepted.__delitem__(addr)
+            self.kill_process(addr)
 
         elif(self.accepted[addr].waiting == True):
             self.fs.sendto(data.encode(), addr)
@@ -219,5 +225,5 @@ class Server:
             self.timer_to_send(addr, time_amount+0.5, data)
 
 
-if __name__ == '__main__':
-    server = Server()
+# if __name__ == '__main__':
+#     server = UDP_Reliable_Server()

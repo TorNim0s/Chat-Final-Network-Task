@@ -10,22 +10,19 @@ ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK": '203', "Po
 ReadSize = 1000 # read 1000 bytes from file each time
 MODES = {"Download": 0, "Upload": 1}
 
-class Client:
-    def __init__(self):
-        self.serverip = '172.28.48.1'
-        self.serverport = 2222
-        while 1:  # infinite loop
-            try:
-                self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                self.fs.bind(('', 0))
-
-                break
-            except:
-                print("Couldn't bind to that port")
+class UDP_Reliable_Client:
+    def __init__(self, serverip, serverport):
+        self.serverip = serverip
+        self.serverport = serverport
+        try:
+            self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.fs.bind(('', 0))
+        except:
+            print("Couldn't find any available port")
 
         self.end = True
 
-        self.mode = MODES["Download"] # needs to get a mode
+        self.mode = None # needs to get a mode
 
         self.wait = False
         self.connected = False
@@ -34,7 +31,7 @@ class Client:
         self.seq = 0
         self.current = 0
 
-        self.file_name = "Sketchpad.png"
+        self.file_name = ""
         self.data = []
 
         self.other_dis = False
@@ -80,7 +77,10 @@ class Client:
             if(self.mode == None):
                 continue
 
-            data = data_coded.decode()
+            try:
+                data = data_coded.decode()
+            except:
+                continue
 
             print(f"{data} -- from -- {addr}")
 
@@ -168,9 +168,6 @@ class Client:
                     continue
 
                 file_data, addr = self.fs.recvfrom(1024)
-
-                print(file_data)
-                print(len(file_data))
 
                 if (seq - self.ack != len(file_data) or ack != self.seq):
                     code = ReliableCode["ACK"]

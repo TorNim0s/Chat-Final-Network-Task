@@ -2,6 +2,7 @@ import socket
 from socket import timeout
 import threading
 import time
+import UDP_Reliable_SER
 
 """
 Create a server with a socket and a thread
@@ -10,8 +11,6 @@ max 24 clients can connect to the server at the same time
 
 Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
          "DownloadFile": '105', "GetFiles":'106', "Error": '107'}
-
-ReliableCode = {"ACK": '200', "NACK": '201', "SYN": '202', "SYN_ACK":'203'}
 
 class Server:
 
@@ -25,8 +24,8 @@ class Server:
                 self.s.bind((self.ip, self.port)) # bind the socket to the port. if the port is already has been socketed it will send error.
 
                 self.file_port = 2222
-                self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                self.fs.bind((self.ip, self.file_port))
+                # self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                # self.fs.bind((self.ip, self.file_port))
 
                 break
             except:
@@ -37,6 +36,7 @@ class Server:
 
         self.files = []
         self.connections = {}
+        self.udp_reliable = UDP_Reliable_SER.UDP_Reliable_Server(self.file_port)
         self.accept_connections()
 
     def accept_connections(self):
@@ -98,14 +98,18 @@ class Server:
             if code == Codes["DownloadFile"]:
                 file_name = data[1]
                 addr = (addr[0], int(data[2]))
-
                 try:
-                    with open(file_name, "rb") as f:
-                        file_data = f.read(1024)
-                        while file_data:
-                            if (self.fs.sendto(file_data, addr)):
-                                print("Sending file to %s" % (name))
-                                file_data = f.read(1024)
+                    user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Download"], file_name) # need to be fixed!
+                    self.udp_reliable.accepted[addr] = user # doesn't work its not saving because of the other process
+                    ok_message = f"{Codes['DownloadFile']}|OK"
+                    self.sendmessage(sock, ok_message.encode())
+                    # try:
+                #     with open(file_name, "rb") as f:
+                #         file_data = f.read(1024)
+                #         while file_data:
+                #             if (self.fs.sendto(file_data, addr)):
+                #                 print("Sending file to %s" % (name))
+                #                 file_data = f.read(1024)
                 except FileNotFoundError:
                     print("File not found")
                     error = f"{Codes['Error']}|Server: File not found"
@@ -166,7 +170,7 @@ class Server:
                     data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
                 elif data_splited[0] == Codes["UploadFile"] or data_splited[0] == Codes["DownloadFile"]:
-                    threading.Thread(target=self.handle_client_file, args=(c, data, data_splited[0], addr, self.connections[c])).start()
+                    self.handle_client_file(c, data, data_splited[0], addr, self.connections[c])
                 elif data_splited[0] == Codes["GetFiles"]:
                     starts = int(data_splited[1])
                     for i in range(starts, starts+10):

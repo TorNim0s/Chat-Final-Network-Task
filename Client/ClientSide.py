@@ -3,7 +3,7 @@ from pygame import *
 import socket
 import threading
 from socket import timeout
-
+import UDP_Reliable_CL
 
 class Client:
     Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
@@ -23,24 +23,22 @@ class Client:
             self.users = []
 
             self.s.connect((self.target_ip, self.target_port))
-            self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            self.fs.bind(('', 0))
+            # self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            # self.fs.bind(('', 0))
         except:
             print("Couldn't connect to server")
             exit(1)
 
         self.file_addr = (self.target_ip, int(self.s.recv(1024).decode()))
+        self.udp_reliable_connection = UDP_Reliable_CL.UDP_Reliable_Client(self.file_addr[0], self.file_addr[1])
 
         self.s.send(self.name.encode())
-
         # Receive data from server
         self.users = []
         data_users = self.s.recv(1024).decode()
         self.split_users(data_users)
         print(self.users)
         self.connector.users = self.users
-
-        chunk_size = 1024  # 1024 bytes
 
         print("Connected to Server")
 
@@ -51,7 +49,7 @@ class Client:
     def kill(self):
         self.stop = True
         self.s.close()
-        self.fs.close()
+        # self.fs.close()
         print("Disconnected from server")
 
     def split_users(self, data):
@@ -85,35 +83,42 @@ class Client:
                 elif data_splited[0] == Client.Codes["Error"]:
                     print("Error: " + data_splited[1])
                     self.connector.recieve_message(data_splited[1], Client.Codes["Error"])
+                elif data_splited[0] == Client.Codes["DownloadFile"]:
+                    if(data_splited[1] == "OK"):
+                        self.udp_reliable_connection.init()
             except:
                 pass
 
     def send_data(self, data, code, path=None):
+        self.udp_reliable_connection.file_name = data
         if code == Client.Codes["DownloadFile"]:
-            data = f"{data}|{self.fs.getsockname()[1]}"
+            data = f"{data}|{self.udp_reliable_connection.fs.getsockname()[1]}"
+            self.udp_reliable_connection.mode = UDP_Reliable_CL.MODES["Download"]
+        else:
+            self.udp_reliable_connection.mode = UDP_Reliable_CL.MODES["Upload"]
         data = code + "|" + data
         self.s.send(data.encode())
-        if (code == Client.Codes["UploadFile"]):
-            threading.Thread(target=self.send_file, args=(data, path)).start()
-        elif code == Client.Codes["DownloadFile"]:
-            threading.Thread(target=self.receive_file, args=(data,)).start()
+        # if (code == Client.Codes["UploadFile"]):
+        #     # threading.Thread(target=self.send_file, args=(data, path)).start()
+        # elif code == Client.Codes["DownloadFile"]:
+            # threading.Thread(target=self.receive_file, args=(data,)).start()
 
-    def receive_file(self, data):
-        data = data.split(sep="|", maxsplit=2)
-        file_name = data[1]
-        try:
-            with open(file_name, 'wb') as f:
-                file_data = self.fs.recv(1024)
-                while file_data:
-                    f.write(file_data)
-                    self.fs.settimeout(2)
-                    file_data = self.fs.recv(1024)
-
-        except timeout:  # need to add last bit sent
-            self.connector.recieve_message(f"received {file_name} successfully!", Client.Codes["Message"])
-        except Exception as e:
-            print(e)
-            self.connector.recieve_message("Error receiving file", Client.Codes["Error"])
+    # def receive_file(self, data):
+    #     data = data.split(sep="|", maxsplit=2)
+    #     file_name = data[1]
+    #     try:
+    #         with open(file_name, 'wb') as f:
+    #             file_data = self.fs.recv(1024)
+    #             while file_data:
+    #                 f.write(file_data)
+    #                 self.fs.settimeout(2)
+    #                 file_data = self.fs.recv(1024)
+    #
+    #     except timeout:  # need to add last bit sent
+    #         self.connector.recieve_message(f"received {file_name} successfully!", Client.Codes["Message"])
+    #     except Exception as e:
+    #         print(e)
+    #         self.connector.recieve_message("Error receiving file", Client.Codes["Error"])
 
     def send_file(self, data, path):
         data_splited = data.split(sep="|", maxsplit=2)
