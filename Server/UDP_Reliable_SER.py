@@ -150,8 +150,6 @@ class UDP_Reliable_Server:
                 self.kill_process(addr)
 
                 if (seq - self.accepted[addr].ack == 1):
-                    # message = "%s|%s|%s".format(ReliableCode["ACK"], self.accepted[addr].seq, self.accepted[addr].ack)
-                    # self.fs.sendto(message.encode(), addr)
 
                     self.fs.sendto(ReliableCode["DIS"].encode(), addr)
 
@@ -248,5 +246,3 @@ class User:
         self.me_dis = False
         self.mid = False
         self.pause = False
-# if __name__ == '__main__':
-#     server = UDP_Reliable_Server()

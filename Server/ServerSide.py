@@ -19,14 +19,12 @@ class Server:
         self.ip = socket.gethostbyname(socket.gethostname()) # get ip of the server
         while 1: # infinite loop
             try:
-                self.port = 1111 # port number
+                self.port = 11111 # port number
 
                 self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create a new socket AF_INET = IPV4 , socket type = TCP.
                 self.s.bind((self.ip, self.port)) # bind the socket to the port. if the port is already has been socketed it will send error.
 
-                self.file_port = 2222
-                # self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                # self.fs.bind((self.ip, self.file_port))
+                self.file_port = 50000
 
                 break
             except:
@@ -50,7 +48,6 @@ class Server:
 
             client_name = c.recv(1024)
 
-            print(client_name.decode());
             self.connections[c] = client_name.decode()
 
             data = "accounts|" + "|".join(self.connections.values())
@@ -63,9 +60,8 @@ class Server:
 
             threading.Thread(target=self.handle_client, args=(c, addr,)).start()
 
-    def broadcast(self, sock, data, code):
+    def broadcast(self, sock, data, code): # send message to everyone
         data = f"{code}|{data.decode()}".encode()
-        # print(data.decode())
         for client, name in self.connections.items():
             if client != self.s:
                 if code == Codes["UserJoined"] or code == Codes["UserLeft"]:
@@ -74,7 +70,7 @@ class Server:
                 else:
                     self.sendmessage(client ,data)
 
-    def sendmessage(self, sock, data):
+    def sendmessage(self, sock, data): # send message to a sock -> the function that actualy sends the message
         try:
             sock.send(data)
         except:
@@ -90,10 +86,8 @@ class Server:
         except:
             print("Error sending data to %s" % (self.connections[send_sock]))
 
-    def handle_client_file(self, sock, data, code, addr, name):
+    def handle_client_file(self, sock, data, code, addr, name): # handles the start of the file details, get filename and set the udp server side
         try:
-            # data = c.recv(1024)
-            # data = data.decode()
             print(data)
             data = data.split("|")
             if code == Codes["DownloadFile"]:
@@ -103,24 +97,12 @@ class Server:
                     user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Download"], file_name)
                     self.udp_reliable.accepted[addr] = user
                     ok_message = f"{Codes['DownloadFile']}|OK"
-                    self.sendmessage(sock, ok_message.encode())
-                    # try:
-                #     with open(file_name, "rb") as f:
-                #         file_data = f.read(1024)
-                #         while file_data:
-                #             if (self.fs.sendto(file_data, addr)):
-                #                 print("Sending file to %s" % (name))
-                #                 file_data = f.read(1024)
+                    self.sendmessage(sock, ok_message.encode()) # send that we ok and ready to start transfer data.
+
                 except FileNotFoundError:
                     print("File not found")
                     error = f"{Codes['Error']}|Server: File not found"
                     self.sendmessage(sock, error.encode())
-                    # self.PrivateMessage(self.s, sock, f"Server: File {file_name} is not in the server".encode())
-
-                # file_data = file_data.encode() # change this to get the file data
-                # self.fs.sendto(file_data, addr)
-                # print(f"File {file_name} has been sent to {addr[0]}")
-                # self.PrivateMessage(self.s, sock, f"Server: File {file_name} is has succesfully sent to you!".encode())
 
             elif code == Codes["UploadFile"]:
                 file_name = data[1]
@@ -130,34 +112,14 @@ class Server:
                 self.udp_reliable.accepted[addr] = user
                 ok_message = f"{Codes['UploadFile']}|OK"
                 self.sendmessage(sock, ok_message.encode())
-                # with open(file_name, 'wb') as f:
-                #     file_data = self.fs.recv(1024)
-                #     while file_data:
-                #         f.write(file_data)
-                #         self.fs.settimeout(2)
-                #         file_data = self.fs.recv(1024)
-                # # file_data = self.fs.recv(1024)
-                # # print(f"File {file_name} has been sent to {addr[0]}")
-                # # self.sendmessage(c, file_data)
-                # print(f"File {file_name} has been received from {addr[0]} known as : {name}")
-                # self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(),
-                #                Codes["Message"])
-                # self.files.append(file_name)
-
 
             elif code == Codes["Error"]:
                 print(f"Error: {data[1]}")
-                # self.fs.close()
 
-        except timeout:
+        except timeout: # we get it if we do sock.settimeout
             print(f"File {file_name} has been received from {addr[0]} known as : {name}")
             self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(), Codes["Message"])
             self.files.append(file_name)
-            # except Exception as e:
-            #     print("Error receiving data from %s:%s" % (addr[0], addr[1]))
-            #     print(e)
-            #     self.fs.close()
-            #     break
 
     def handle_client(self, c, addr):
         while 1:
@@ -168,9 +130,6 @@ class Server:
 
                 data_splited = data.split(sep="|", maxsplit=2)
 
-                # print(data_splited)
-
-                # data = data.encode()
                 if data_splited[0] == Codes["Message"]:
                     data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
@@ -179,7 +138,6 @@ class Server:
                 elif data_splited[0] == Codes["GetFiles"]:
                     starts = int(data_splited[1])
                     files = os.listdir('./files')
-                    print (files)
                     for i in range(starts, starts+10):
                         time.sleep(0.05)
                         if i >= len(files):
@@ -191,8 +149,6 @@ class Server:
                     data = f"{self.connections[c]}: {data_splited[2]}"
                     name = data_splited[1]
 
-                    # try:
-
                     key_list = list(self.connections.keys())
                     val_list = list(self.connections.values())
 
@@ -200,8 +156,6 @@ class Server:
                     sock = key_list[position]
 
                     self.PrivateMessage(c, sock ,data.encode())
-                    # except:
-                    #     print("User is not in the server")
 
             except socket.error:
                 name = self.connections[c]

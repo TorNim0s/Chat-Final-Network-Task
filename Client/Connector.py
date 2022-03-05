@@ -44,8 +44,8 @@ class Connector:
     def get_files(self, data):
         self.client.send_data(data, Client.Codes["GetFiles"])
 
-    def send_file(self, data, path):
-        self.client.send_data(data, Client.Codes["UploadFile"], path)
+    def send_file(self, data):
+        self.client.send_data(data, Client.Codes["UploadFile"])
 
     def download_file(self, data):
         self.client.send_data(data, Client.Codes["DownloadFile"])

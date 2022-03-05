@@ -63,8 +63,7 @@ class GUI:
         self.menu_surface.blit(f.render("/upload - upload file", True, (255, 255, 255)), (10, 80))
         self.menu_surface.blit(f.render("/download - download file", True, (255, 255, 255)), (10, 100))
         self.menu_surface.blit(f.render("/files - available files", True, (255, 255, 255)), (10, 120))
-        self.menu_surface.blit(f.render("/stop - stop download", True, (255, 255, 255)), (10, 140))
-        self.menu_surface.blit(f.render("/resume - resume download", True, (255, 255, 255)), (10, 160))
+        self.menu_surface.blit(f.render("/resume - resume download", True, (255, 255, 255)), (10, 140))
 
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 50), (280, 50))
 
@@ -145,15 +144,14 @@ class GUI:
                             if split[0] == '/pm':
                                 self.connector.send_private_message(' '.join(split[2:]), split[1])
                             elif split[0] == '/upload':
-                                if len(split) != 3:
+                                if len(split) != 2:
                                     self.connector.recieve_message('Wrong number of arguments, use /upload '
-                                                                   '<file_save_name> <file_name>')
+                                                                   '<file_name>')
                                     # Tk().withdraw()
                                     # file_path = filedialog.askopenfilename()  # need to split and take file name
                                     # print(file_path)
                                 else:
-                                    data = f"{split[1]}"
-                                    self.connector.send_file(data, split[2])
+                                    self.connector.send_file(split[1])
                             elif split[0] == '/download':
                                 if len(split) != 2:
                                     self.connector.recieve_message('Wrong number of arguments, use /download '
