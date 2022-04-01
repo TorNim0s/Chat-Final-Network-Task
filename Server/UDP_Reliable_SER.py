@@ -21,10 +21,10 @@ class UDP_Reliable_Server:
             except:
                 print("Couldn't bind to that port")
 
-        print('IP Adress: ' + self.ip)
-        print('Port Adress: ' + str(self.file_port))
+        # print('IP Adress: ' + self.ip)
+        # print('Port Adress: ' + str(self.file_port))
 
-        self.accepted = {}
+        self.accepted = {} # address -> User
         self.end = False
 
         self.init()
@@ -36,7 +36,6 @@ class UDP_Reliable_Server:
         self.end = True
 
     def kill_process(self, addr):
-
         if (self.accepted[addr].process != None):
             self.accepted[addr].process.terminate()
             self.accepted[addr].process = None
@@ -54,8 +53,6 @@ class UDP_Reliable_Server:
 
             data = data.split(sep="|", maxsplit=3)
 
-            print(self.accepted)
-
             if(data[0] == ReliableCode["SYN"]):
                 # self.accepted[addr] = User(0, "eldad.txt")
                 self.fs.sendto(ReliableCode["SYN_ACK"].encode(), addr)
@@ -64,12 +61,11 @@ class UDP_Reliable_Server:
 
                 if self.accepted[addr].mode == User.MODES["Download"]:
                     print(f"Starting to send file to {addr}")
-                    if self.accepted[addr].current == len(self.accepted[addr].data):
+                    if self.accepted[addr].current == len(self.accepted[addr].data): # if the file is empty
                         self.accepted[addr].seq += 1
                     else:
                         self.accepted[addr].seq = len(self.accepted[addr].data[self.accepted[addr].current])
-                    message = "{}|{}|{}".format(ReliableCode["Post"],self.accepted[addr].seq,
-                                                   self.accepted[addr].ack)
+                    message = "{}|{}|{}".format(ReliableCode["Post"],self.accepted[addr].seq, self.accepted[addr].ack) # post|seq|ack
                     self.accepted[addr].waiting = True
                     self.fs.sendto(message.encode(), addr)
                     if self.accepted[addr].current != len(self.accepted[addr].data):
@@ -107,6 +103,7 @@ class UDP_Reliable_Server:
                     if(self.accepted[addr].current >= len(self.accepted[addr].data)/2 and not self.accepted[addr].mid):
                         self.accepted[addr].mid = True
                         message = ReliableCode["MID_PAUSE"]
+                        self.fs.sendto(message.encode(), addr)
                         self.accepted[addr].waiting = True
                         self.accepted[addr].process = Process(target=self.timer_to_send, args=(addr, 1, message))
                         self.accepted[addr].process.start()
@@ -235,11 +232,12 @@ class User:
         self.data = []
         self.process = None
 
-        with open(f"./files/{self.file_name}", "rb") as file:
-            data_line = file.read(1024)
-            while data_line:
-                self.data.append(data_line)
+        if(mode == User.MODES["Download"]):
+            with open(f"./files/{self.file_name}", "rb") as file:
                 data_line = file.read(1024)
+                while data_line:
+                    self.data.append(data_line)
+                    data_line = file.read(1024)
 
 
         self.other_dis = False

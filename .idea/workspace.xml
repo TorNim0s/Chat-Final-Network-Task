@@ -20,7 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3f58619-c221-4b56-a8c0-690826823968" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Tests/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/files/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Client/files/test.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/ServerSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ServerSide.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/files/test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/test_ClientSide.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +64,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Tests" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -66,7 +72,7 @@
       <recent name="D:\מדמח\תקשורת\Chat-Final-Network-Task\Server\files" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in test_ClientSide.py">
+  <component name="RunManager" selected="Python.Connector">
     <configuration name="Connector" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Chat-Final-Network-Task" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -165,15 +171,15 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in test_ClientSide.py" />
-        <item itemvalue="Python.ServerSide" />
-        <item itemvalue="Python tests.Unittests for test_ClientSide.TestClient" />
         <item itemvalue="Python.Connector" />
+        <item itemvalue="Python.ServerSide" />
+        <item itemvalue="Python tests.Unittests in test_ClientSide.py" />
+        <item itemvalue="Python tests.Unittests for test_ClientSide.TestClient" />
         <item itemvalue="Python.UDP_Reliable_CL" />
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="false" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -188,6 +194,12 @@
       <workItem from="1646389559077" duration="369000" />
       <workItem from="1646393308165" duration="1735000" />
       <workItem from="1646399840726" duration="6202000" />
+      <workItem from="1646594085134" duration="5411000" />
+      <workItem from="1646640261438" duration="4303000" />
+      <workItem from="1647249718664" duration="648000" />
+      <workItem from="1647726957518" duration="596000" />
+      <workItem from="1648057496799" duration="36000" />
+      <workItem from="1648826493485" duration="151000" />
     </task>
     <servers />
   </component>
@@ -204,49 +216,10 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="739" y="275" key="FileChooserDialogImpl" timestamp="1646513357760">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="739" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1646513357760" />
-    <state width="1899" height="158" key="GridCell.Tab.0.bottom" timestamp="1646514370027">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1646514370027" />
-    <state width="1899" height="158" key="GridCell.Tab.0.center" timestamp="1646514370027">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1646514370027" />
-    <state width="1899" height="158" key="GridCell.Tab.0.left" timestamp="1646514370027">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1646514370027" />
-    <state width="1899" height="158" key="GridCell.Tab.0.right" timestamp="1646514370027">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="158" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1646514370027" />
-    <state width="1899" height="347" key="GridCell.Tab.1.bottom" timestamp="1646514254876">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1646514254876" />
-    <state width="1899" height="347" key="GridCell.Tab.1.center" timestamp="1646514254875">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1646514254875" />
-    <state width="1899" height="347" key="GridCell.Tab.1.left" timestamp="1646514254875">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1646514254875" />
-    <state width="1899" height="347" key="GridCell.Tab.1.right" timestamp="1646514254876">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1646514254876" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1646149949123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
     <SUITE FILE_PATH="coverage/ClientSide_py$test.coverage" NAME="test Coverage Results" MODIFIED="1646146438440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1646150005276" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
+    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1646641578020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
+    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1646641576152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
   </component>
 </project>

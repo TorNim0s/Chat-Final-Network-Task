@@ -34,7 +34,7 @@ class Server:
         print('Port Adress: ' + str(self.port))
 
         self.files = []
-        self.connections = {}
+        self.connections = {} # --> sock -> name
         self.udp_reliable = UDP_Reliable_SER.UDP_Reliable_Server(self.file_port)
         self.accept_connections()
 
@@ -68,7 +68,7 @@ class Server:
                     if client != sock:
                         self.sendmessage(client, data)
                 else:
-                    self.sendmessage(client ,data)
+                    self.sendmessage(client,data)
 
     def sendmessage(self, sock, data): # send message to a sock -> the function that actualy sends the message
         try:
@@ -127,7 +127,7 @@ class Server:
                 data = c.recv(1024)
                 data = data.decode()
                 print("data recieved %s from %s" % (data, self.connections[c]))
-
+                # code|data
                 data_splited = data.split(sep="|", maxsplit=2)
 
                 if data_splited[0] == Codes["Message"]:
@@ -152,10 +152,14 @@ class Server:
                     key_list = list(self.connections.keys())
                     val_list = list(self.connections.values())
 
-                    position = val_list.index(name)
-                    sock = key_list[position]
+                    try:
+                        position = val_list.index(name)
+                        sock = key_list[position]
+                        self.PrivateMessage(c, sock ,data.encode())
+                    except ValueError:
+                        print("User %s not found".format(name))
+                        self.sendmessage(c, f"{Codes['Error']}|User not found".encode())
 
-                    self.PrivateMessage(c, sock ,data.encode())
 
             except socket.error:
                 name = self.connections[c]

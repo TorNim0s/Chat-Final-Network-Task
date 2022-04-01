@@ -152,7 +152,7 @@ class UDP_Reliable_Client:
                         message = "{}|{}|{}".format(ReliableCode["Post"], self.seq,self.ack)
                         self.fs.sendto(message.encode(), addr)
                         self.fs.sendto(self.data[self.current], addr)
-                        self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, message,
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[1, message,
                                                                                         self.data[self.current]])
                         self.wait[self.thread.getName()] = True
                         self.thread.start()
@@ -176,11 +176,11 @@ class UDP_Reliable_Client:
                     self.fs.sendto(message.encode(), addr)
                     if send_the_data:
                         self.fs.sendto(self.data[self.current], addr)
-                        self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, message,
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[1, message,
                                                                                         self.data[self.current]])
                         self.wait[self.thread.getName()] = True
                     else:
-                        self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, message])
+                        self.thread = threading.Thread(target=self.timer_to_send, args=[1, message])
                         self.wait[self.thread.getName()] = True
                     self.thread.start()
 
@@ -245,7 +245,7 @@ class UDP_Reliable_Client:
                 self.fs.sendto(ReliableCode["DIS"].encode(), addr) # lets send him that i want to dis to
                 self.check_thread()
 
-                self.thread = threading.Thread(target=self.timer_to_send, args=[addr, 1, ReliableCode["DIS"]])
+                self.thread = threading.Thread(target=self.timer_to_send, args=[1, ReliableCode["DIS"]])
                 self.wait[self.thread.getName()] = True
                 self.thread.start()
 
