@@ -5,8 +5,19 @@ import time
 ReliableCode = {"ACK": '200', "SYN": '201', "SYN_ACK": '202', "Post": '203', "DIS": '204',
                 "DIS_SYN": '205', "MID_PAUSE": '206', "MID_PAUSE_ACK": '207'}
 
-ReadSize = 1000 # read 1000 bytes from file each time
 MODES = {"Download": 0, "Upload": 1}
+
+"""
+Explanation:
+This section is for the Reliable UDP Client side using for sending and receiving files.
+We use Go back N protocol for sending and receiving files.
+We got a window size of 1 (because we didn't implement any congestion control).
+We use a buffer of 1000 bytes for each packet.
+
+For each packet we send, we start a timer to check if the packet is lost.
+if the packet is lost, we resend the packet and make the timer last 0.5 seconds longer.
+if the timer gets to 3 seconds of waiting we stop the udp connection (Probably problem with the connection between us).
+"""
 
 class UDP_Reliable_Client:
     def __init__(self, serverip, serverport, notification_fucntion):
@@ -19,7 +30,7 @@ class UDP_Reliable_Client:
         except:
             print("Couldn't find any available port")
 
-        self.end = True # the udp sesson ends? True means we ended our session therefore no.
+        self.end = True # the udp sesson ends? True means we ended our session.
 
         self.mode = None # download or upload
 

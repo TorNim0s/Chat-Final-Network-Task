@@ -10,6 +10,7 @@ Create a server with a socket and a thread
 max 24 clients can connect to the server at the same time
 """
 
+# Unique Codes for communication between the server and the client
 Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
          "DownloadFile": '105', "GetFiles":'106', "Error": '107'}
 
@@ -30,10 +31,10 @@ class Server:
             except:
                 print("Couldn't bind to that port")
 
-        print('IP Adress: ' + self.ip)
-        print('Port Adress: ' + str(self.port))
+        print('IP Adress: ' + self.ip) # print ip of the server
+        print('Port Adress: ' + str(self.port)) # print port of the server
 
-        self.files = []
+        self.files = [] # list of files
         self.connections = {} # --> sock -> name
         self.udp_reliable = UDP_Reliable_SER.UDP_Reliable_Server(self.file_port)
         self.accept_connections()
@@ -50,7 +51,7 @@ class Server:
 
             self.connections[c] = client_name.decode()
 
-            data = "accounts|" + "|".join(self.connections.values())
+            data = "|".join(self.connections.values())
 
             c.send(data.encode())
 
@@ -79,47 +80,38 @@ class Server:
     def PrivateMessage(self, my_sock, send_sock, data):
         try:
             code = Codes["PrivateMessage"]
-            data = f"{code}|{data.decode()}".encode()
-            if (my_sock != self.s):
-                my_sock.send(data)
-            send_sock.send(data)
+            dataTo = f"{code}|{self.connections[my_sock]}: {data.decode()}".encode()
+            dataFrom = f"{code}|To {self.connections[send_sock]}: {data.decode()}".encode()
+            send_sock.send(dataTo)
+            if my_sock != self.s:
+                my_sock.send(dataFrom)
         except:
             print("Error sending data to %s" % (self.connections[send_sock]))
 
-    def handle_client_file(self, sock, data, code, addr, name): # handles the start of the file details, get filename and set the udp server side
-        try:
-            print(data)
-            data = data.split("|")
-            if code == Codes["DownloadFile"]:
-                file_name = data[1]
-                addr = (addr[0], int(data[2]))
-                try:
-                    user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Download"], file_name)
-                    self.udp_reliable.accepted[addr] = user
-                    ok_message = f"{Codes['DownloadFile']}|OK"
-                    self.sendmessage(sock, ok_message.encode()) # send that we ok and ready to start transfer data.
-
-                except FileNotFoundError:
-                    print("File not found")
-                    error = f"{Codes['Error']}|Server: File not found"
-                    self.sendmessage(sock, error.encode())
-
-            elif code == Codes["UploadFile"]:
-                file_name = data[1]
-                addr = (addr[0], int(data[2]))
-                print("Saving file %s" % file_name)
-                user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Upload"], file_name)
+    def handle_client_file(self, sock, data, code, addr): # handles the file transfer, get filename and set the udp server side
+        data = data.split("|")
+        if code == Codes["DownloadFile"]:
+            file_name = data[1]
+            addr = (addr[0], int(data[2]))
+            try:
+                user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Download"], file_name)
                 self.udp_reliable.accepted[addr] = user
-                ok_message = f"{Codes['UploadFile']}|OK"
-                self.sendmessage(sock, ok_message.encode())
+                ok_message = f"{Codes['DownloadFile']}|OK"
+                self.sendmessage(sock, ok_message.encode()) # send that we ok and ready to start transfer data.
 
-            elif code == Codes["Error"]:
-                print(f"Error: {data[1]}")
+            except FileNotFoundError:
+                print("File not found")
+                error = f"{Codes['Error']}|Server: File not found"
+                self.sendmessage(sock, error.encode())
 
-        except timeout: # we get it if we do sock.settimeout
-            print(f"File {file_name} has been received from {addr[0]} known as : {name}")
-            self.broadcast(self.fs, f"Server: File {file_name} has been received from {name}".encode(), Codes["Message"])
-            self.files.append(file_name)
+        elif code == Codes["UploadFile"]:
+            file_name = data[1]
+            addr = (addr[0], int(data[2]))
+            print("Saving file %s" % file_name)
+            user = UDP_Reliable_SER.User(UDP_Reliable_SER.User.MODES["Upload"], file_name)
+            self.udp_reliable.accepted[addr] = user
+            ok_message = f"{Codes['UploadFile']}|OK"
+            self.sendmessage(sock, ok_message.encode())
 
     def handle_client(self, c, addr):
         while 1:
@@ -134,7 +126,7 @@ class Server:
                     data = f"{self.connections[c]}: {data_splited[1]}"
                     self.broadcast(c, data.encode(), code=Codes["Message"])
                 elif data_splited[0] == Codes["UploadFile"] or data_splited[0] == Codes["DownloadFile"]:
-                    self.handle_client_file(c, data, data_splited[0], addr, self.connections[c])
+                    self.handle_client_file(c, data, data_splited[0], addr)
                 elif data_splited[0] == Codes["GetFiles"]:
                     starts = int(data_splited[1])
                     files = os.listdir('./files')
@@ -146,7 +138,7 @@ class Server:
                         self.sendmessage(c, data.encode())
 
                 elif data_splited[0] == Codes["PrivateMessage"]:
-                    data = f"{self.connections[c]}: {data_splited[2]}"
+                    data = data_splited[2]
                     name = data_splited[1]
 
                     key_list = list(self.connections.keys())
@@ -159,6 +151,9 @@ class Server:
                     except ValueError:
                         print("User %s not found".format(name))
                         self.sendmessage(c, f"{Codes['Error']}|User not found".encode())
+
+                elif data_splited[0] == Codes["Error"]:
+                    print(f"Error: {data[1]}")
 
 
             except socket.error:

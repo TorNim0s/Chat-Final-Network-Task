@@ -20,13 +20,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3f58619-c221-4b56-a8c0-690826823968" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Client/CodeHandler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/CodesHandler/Message.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/CodesHandler/UserJoined.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/CodesHandler/UserLeft.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TESTIT/A.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TESTIT/B.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TESTIT/Ma.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TESTIT/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ClientSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientSide.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Connector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/files/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Client/files/test.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/ServerSide.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ServerSide.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UDP_Reliable_SER.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/files/test.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/test_ClientSide.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/files/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Server/files/test.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,15 +74,19 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/TestIt" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\מדמח\שנה ב\תקשורת\פרויקט גמר\Client\TestIt" />
+      <recent name="D:\מדמח\שנה ב\תקשורת\פרויקט גמר\Client\CodesHandler" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\מדמח\תקשורת\Chat-Final-Network-Task\Client\files" />
       <recent name="D:\מדמח\תקשורת\Chat-Final-Network-Task\Server\files" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Connector">
+  <component name="RunManager" selected="Python.main">
     <configuration name="Connector" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Chat-Final-Network-Task" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -117,7 +131,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="UDP_Reliable_CL" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Chat-Final-Network-Task" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -125,12 +139,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Client" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TESTIT" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Client/UDP_Reliable_CL.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TESTIT/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -154,7 +168,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in test_ClientSide.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests in D:/מדמח/שנה ב/תקשורת/פרויקט גמר/Tests/test_ClientSide.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="Chat-Final-Network-Task" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -171,11 +185,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.Connector" />
         <item itemvalue="Python.ServerSide" />
-        <item itemvalue="Python tests.Unittests in test_ClientSide.py" />
+        <item itemvalue="Python tests.Unittests in D:/מדמח/שנה ב/תקשורת/פרויקט גמר/Tests/test_ClientSide.py" />
         <item itemvalue="Python tests.Unittests for test_ClientSide.TestClient" />
-        <item itemvalue="Python.UDP_Reliable_CL" />
       </list>
     </recent_temporary>
   </component>
@@ -199,7 +213,10 @@
       <workItem from="1647249718664" duration="648000" />
       <workItem from="1647726957518" duration="596000" />
       <workItem from="1648057496799" duration="36000" />
-      <workItem from="1648826493485" duration="151000" />
+      <workItem from="1648826493485" duration="312000" />
+      <workItem from="1649951057782" duration="596000" />
+      <workItem from="1650111940237" duration="597000" />
+      <workItem from="1650902626007" duration="15235000" />
     </task>
     <servers />
   </component>
@@ -218,8 +235,9 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ClientSide_py$main.coverage" NAME="main Coverage Results" MODIFIED="1650919221259" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TESTIT" />
     <SUITE FILE_PATH="coverage/ClientSide_py$test.coverage" NAME="test Coverage Results" MODIFIED="1646146438440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1646641578020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
-    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1646641576152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
+    <SUITE FILE_PATH="coverage/ClientSide_py$Connector.coverage" NAME="Connector Coverage Results" MODIFIED="1650915995533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client" />
+    <SUITE FILE_PATH="coverage/ClientSide_py$ServerSide.coverage" NAME="ServerSide Coverage Results" MODIFIED="1650905250937" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
   </component>
 </project>

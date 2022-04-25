@@ -21,9 +21,6 @@ class UDP_Reliable_Server:
             except:
                 print("Couldn't bind to that port")
 
-        # print('IP Adress: ' + self.ip)
-        # print('Port Adress: ' + str(self.file_port))
-
         self.accepted = {} # address -> User
         self.end = False
 
@@ -48,8 +45,6 @@ class UDP_Reliable_Server:
                 data = data_coded.decode()
             except:
                 continue
-
-            print(f"{data} -- from -- {addr}")
 
             data = data.split(sep="|", maxsplit=3)
 
@@ -206,7 +201,7 @@ class UDP_Reliable_Server:
                     self.accepted.__delitem__(addr)
                     continue
 
-    def timer_to_send(self, addr, time_amount, data, message2= None):
+    def timer_to_send(self, addr, time_amount, data, message2=None):
         time.sleep(time_amount)
         if (time_amount > 3):
             self.accepted[addr].waiting = False

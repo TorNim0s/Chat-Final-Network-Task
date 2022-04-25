@@ -7,9 +7,6 @@ from tkinter import filedialog
 
 class GUI:
     def __init__(self, Connector):
-        # self.message = Button('Direct Message', 70, 75, 150, 30, addX=800, addY=500)
-        # self.upload = Button('Upload File', 70, 125, 150, 30, addX=800, addY=500)
-        # self.download = Button('Download File', 70, 175, 150, 30, addX=800, addY=500)
 
         pg.init()
 
@@ -47,11 +44,6 @@ class GUI:
         pg.draw.line(self.users_surface, (255, 255, 255), (280, 0), (280, 720))
         pg.draw.line(self.users_surface, (255, 255, 255), (0, 0), (280, 0))
         pg.draw.line(self.users_surface, (255, 255, 255), (0, 720), (280, 720))
-
-        # chat surface
-        # pg.draw.line(self.chat_surface, (255, 255, 255), (0, 0), (800, 0))
-        # pg.draw.line(self.chat_surface, (255, 255, 255), (0, 50), (800, 50))
-        # self.chat_surface.blit(header.render("Eldad's And Ilan's Chat Room", True, (255, 255, 255)), (250, 15))
 
         # menu surface
         pg.draw.line(self.menu_surface, (255, 255, 255), (0, 0), (0, 720))
@@ -106,9 +98,6 @@ class GUI:
         quit = False
         while not quit:
             for e in pg.event.get():
-                # self.message.handle_event(e)
-                # self.upload.handle_event(e)
-                # self.download.handle_event(e)
 
                 if e.type == pg.QUIT:
                     quit = True
@@ -147,9 +136,6 @@ class GUI:
                                 if len(split) != 2:
                                     self.connector.recieve_message('Wrong number of arguments, use /upload '
                                                                    '<file_name>')
-                                    # Tk().withdraw()
-                                    # file_path = filedialog.askopenfilename()  # need to split and take file name
-                                    # print(file_path)
                                 else:
                                     self.connector.send_file(split[1])
                             elif split[0] == '/download':
@@ -194,13 +180,6 @@ class GUI:
             self.screen.blit(self.chat_surface, (0, self.scroll_chat_y))
             self.screen.blit(self.users_surface, (800, self.scroll_users_y))
             self.screen.blit(self.menu_surface, (800, 500))
-
-            # self.message.update()
-            # self.message.draw(self.menu_surface)
-            # self.upload.update()
-            # self.upload.draw(self.menu_surface)
-            # self.download.update()
-            # self.download.draw(self.menu_surface)
 
             pg.display.flip()
             clock.tick(30)
