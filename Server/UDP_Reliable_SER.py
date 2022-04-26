@@ -86,7 +86,7 @@ class UDP_Reliable_Server:
                     ack = int(data[2])
 
                     if(ack != self.accepted[addr].seq):
-                        print("Lost packet")
+                        print("Malformed packet")
                         message = "{}|{}|{}".format(ReliableCode["Post"], self.accepted[addr].seq, self.accepted[addr].ack)
                         self.fs.sendto(message.encode(), addr)
                         self.fs.sendto(self.accepted[addr].data[self.accepted[addr].current], addr)
