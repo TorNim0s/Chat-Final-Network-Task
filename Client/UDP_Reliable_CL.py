@@ -26,10 +26,10 @@ ReliableCode = {"ACK": '200', "SYN": '201', "SYN_ACK": '202', "Post": '203', "DI
 MODES = {"Download": 0, "Upload": 1}
 
 class UDP_Reliable_Client:
-    def __init__(self, serverip, serverport, notification_function):
+    def __init__(self, serverIP, serverPort, notification_function):
         self.notification_function = notification_function # function to update gui
-        self.serverip = serverip
-        self.serverport = serverport
+        self.serverIP = serverIP
+        self.serverPort = serverPort
         try:
             self.fs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # IPV4, UDP
             self.fs.bind(('', 0)) # localhost, first free port
@@ -47,20 +47,20 @@ class UDP_Reliable_Client:
         self.seq = 0 # last seq we received
         self.current = 0 # the current data of the file to send -> only for upload mode (index in file)
 
-        self.file_name = "" # the name of the file we want to send or receive
+        self.fileName = "" # the name of the file we want to send or receive
         self.data = [] # the data of the file we want to send or receive
 
-        self.other_dis = False # server wants to disconnect?
-        self.me_dis = False # am i want to disconnect?
+        self.otherDis = False # server wants to disconnect?
+        self.meDis = False # am I want to disconnect?
         self.thread = None # what is the last thread we started to wait?
-        self.pause = False # did we got to 50% and we on a pause mode?
+        self.pause = False # did we get to 50% and we on a pause mode?
 
     def init(self): # initiate
         self.end = False
         self.wait = {}
         self.connected = False
-        self.other_dis = False
-        self.me_dis = False
+        self.otherDis = False
+        self.meDis = False
         self.ack = 0
         self.seq = 0
         self.current = 0
@@ -79,7 +79,7 @@ class UDP_Reliable_Client:
                 self.wait[self.thread.getName()] = False
 
     def send_resume(self): # send resume to the server, on 50% and continue the file transfer
-        server_addr = (self.serverip, self.serverport)
+        server_addr = (self.serverIP, self.serverPort)
         code = ReliableCode["ACK"]
         message = f"{code}|{self.seq}|{self.ack}"
         # we will send the last ack so the server will start sending the file from there.
@@ -91,7 +91,7 @@ class UDP_Reliable_Client:
         self.thread.start() # start that thread
 
     def file_handle(self): # main thread handle everything about uploading or downloading
-        server_addr = (self.serverip, self.serverport) # server ip and port.
+        server_addr = (self.serverIP, self.serverPort) # server ip and port.
 
         self.fs.sendto(ReliableCode["SYN"].encode(), server_addr) # send syn to connect with the server udp
         self.check_thread() # check if we have a thread running if so kill it.
@@ -121,9 +121,9 @@ class UDP_Reliable_Client:
                 print("Connected to server - SYN_ACK received")
 
                 if self.mode == MODES["Upload"]: # if we on upload mode lets send the first bytes.
-                    print(self.file_name)
+                    print(self.fileName)
                     try:
-                        with open(f"./files/{self.file_name}", "rb") as file: # start saving all the bytes of the file
+                        with open(f"./files/{self.fileName}", "rb") as file: # start saving all the bytes of the file
                             data_line = file.read(1024) # read the first 1024 bytes
                             # add all the file data to an array - every index in array contain 1024 bytes
                             while data_line:
@@ -232,7 +232,7 @@ class UDP_Reliable_Client:
                     self.wait[self.thread.getName()] = True
                     self.thread.start()
 
-                    with open(f"./files/{self.file_name}", "wb") as file: # save the file
+                    with open(f"./files/{self.fileName}", "wb") as file: # save the file
                         for line in self.data:
                             file.write(line)
 
@@ -260,10 +260,10 @@ class UDP_Reliable_Client:
             elif (data[0] == ReliableCode["DIS"]): # if the server wants to disconnect
 
                 print("Server wants to disconnect")
-                self.other_dis = True
+                self.otherDis = True
                 self.fs.sendto(ReliableCode["DIS_SYN"].encode(), addr) # send the DIS_SYN to the server
 
-                if self.me_dis: # if I sent him DIS before lets close the session
+                if self.meDis: # if I sent him DIS before lets close the session
                     print("Closing!")
                     self.close()
                     break
@@ -277,8 +277,8 @@ class UDP_Reliable_Client:
 
             elif (data[0] == ReliableCode["DIS_SYN"]): # accepted my disconnect
                 self.wait[self.thread.getName()] = False
-                self.me_dis = True
-                if self.other_dis: # if he sent me a disconnected request before lets close the session
+                self.meDis = True
+                if self.otherDis: # if he sent me a disconnected request before lets close the session
                     self.close()
                     break
         print("Finished!")
@@ -294,7 +294,7 @@ class UDP_Reliable_Client:
         The time is increased by 0.5 sec each time until we get to 3 seconds.
         """
 
-        server_addr = (self.serverip, self.serverport)
+        server_addr = (self.serverIP, self.serverPort)
         time.sleep(time_amount)
         if (time_amount > 3): # if we got to 3 we have a connection problem between us, and we want to close it.
             self.close()

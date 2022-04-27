@@ -16,32 +16,33 @@ code|data
 """
 
 class Client:
+
     Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
              "DownloadFile": '105', "GetFiles": '106', "Error": '107'} # Codes for tcp messages
 
     def __init__(self, ip, port, name, connector):
-        self.CodeHandler = CodeHandlerSwitcher(self) # Handler for the codes between the client and the server
+        self.codeHandler = CodeHandlerSwitcher(self) # Handler for the codes between the client and the server
         self.connector = connector # the connector that is used to connect the GUI to the functionality - MVC DP
         self.stop = False # boolean for our program to stop
 
-        self.target_ip = ip
-        self.target_port = int(port)
+        self.targetIP = ip
+        self.targetPort = int(port)
         self.name = name
 
         self.users = []
 
         try:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # create socket ipv4 - tcp
-            self.s.connect((self.target_ip, self.target_port))
+            self.s.connect((self.targetIP, self.targetPort))
         except:
             print("Couldn't connect to server")
             exit(1)
 
         # getting the udp socket address from the server
-        self.file_port = (int(self.s.recv(1024).decode()))
+        self.filePort = (int(self.s.recv(1024).decode()))
 
         # creating the UDP_Reliable_CL object and send him the server address and notify function when receiving data
-        self.udp_reliable_connection = UDP_Reliable_CL.UDP_Reliable_Client(self.target_ip, self.file_port,
+        self.udp_reliable_connection = UDP_Reliable_CL.UDP_Reliable_Client(self.targetIP, self.filePort,
                                                                            self.connector.recieve_message)
 
         self.s.send(self.name.encode()) # sending my name to the server so everyone will know who just connected
@@ -53,7 +54,7 @@ class Client:
 
         print("Connected to Server")
 
-        self.receive_thread = threading.Thread(target=self.receive_server_data).start() # Main handle thread
+        self.receiveThread = threading.Thread(target=self.receive_server_data).start() # Main handle thread
 
     def kill(self): # stop the tcp connection and main thread. - disconnect from the server
         self.stop = True
@@ -71,10 +72,10 @@ class Client:
                 data = data.decode() # decoding the data
                 data_splited = data.split(sep="|", maxsplit=1) # splitting the data because it looks like code|data
 
-                self.CodeHandler.handleCodeReceive(data_splited[0], data_splited[1]) # passing the data to the code handler
+                self.codeHandler.handleCodeReceive(data_splited[0], data_splited[1]) # passing the data to the code handler
             except:
                 pass
 
     def send_data(self, data, code): # sending data to the server
-        self.CodeHandler.handleCodeSend(code, data) # passing the data to the code handler
+        self.codeHandler.handleCodeSend(code, data) # passing the data to the code handler
 

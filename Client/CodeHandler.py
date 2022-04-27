@@ -1,5 +1,5 @@
 from CodesHandler import UserJoined, UserLeft, Message, \
-    PrivateMessage, UploadFile, DownloadFile, GetFiles, Error
+    PrivateMessage, UploadFile, DownloadFile, Error
 
 # Codes and Handler between Client and Server, used to handle the messages
 Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessage": '103', "UploadFile": '104',
@@ -9,8 +9,7 @@ Codes = {"UserJoined": '100', "UserLeft": '101', "Message": '102', "PrivateMessa
 # for example Handler[Codes{"UserJoined"}].handleRec will handle the received message with code UserJoined(100)
 Handler = {Codes["UserJoined"]: UserJoined, Codes["UserLeft"]: UserLeft, Codes["Message"]: Message,
            Codes["PrivateMessage"]: PrivateMessage, Codes["UploadFile"]: UploadFile,
-           Codes["DownloadFile"]: DownloadFile, Codes["GetFiles"]: GetFiles,
-           Codes["Error"]: Error}
+           Codes["DownloadFile"]: DownloadFile, Codes["Error"]: Error}
 
 
 class CodeHandlerSwitcher:

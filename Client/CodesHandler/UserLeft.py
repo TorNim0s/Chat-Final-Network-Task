@@ -1,4 +1,4 @@
-def handleRec(data, client):
+def handleRec(data, client): # removing the user that left the chat and update it on gui
     print("GOT HERE")
     client.users.remove(data[0])
     print(f"{data[0]} left the chat")
